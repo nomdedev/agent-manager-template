@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+
+# Logs
+*.log
+logs/
+
+# Claude
+.claude/activity.log
+.claude/bash.log
+.claude/debug/
+.claude/cache/
+.claude/history.jsonl
+.claude/sessions/
+.claude/tasks/
+.claude/file-history/
+.claude/paste-cache/
+.claude/shell-snapshots/
+.claude/stats-cache.json
+.claude/plans/
+.claude/backups/
+.claude/downloads/
+.claude/settings.local.json
+
+# OpenCode
+.opencode/plugins/node_modules/
+
+# Temporary
+tmp/
+temp/

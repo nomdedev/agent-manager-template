@@ -1,0 +1,232 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "_comment": "Bridge config — .claude/ is the source of truth. This file tells OpenCode where to find everything.",
+
+  "model": "anthropic/claude-sonnet-4-20250514",
+
+  "instructions": [
+    ".claude/CLAUDE.md",
+    ".claude/architecture.md",
+    ".claude/context.md",
+    ".claude/rules/security.md",
+    ".claude/rules/orchestration.md"
+  ],
+
+  "permission": {
+    "edit": "allow",
+    "bash": {
+      "*": "ask",
+      "git *": "allow",
+      "npm *": "allow",
+      "npx *": "allow",
+      "node *": "allow",
+      "tsc *": "allow",
+      "vitest *": "allow",
+      "eslint *": "allow",
+      "prettier *": "allow",
+      "find *": "allow",
+      "grep *": "allow",
+      "cat *": "allow",
+      "ls *": "allow",
+      "wc *": "allow",
+      "head *": "allow",
+      "tail *": "allow",
+      "curl *": "allow",
+      "rg *": "allow",
+      "echo *": "allow",
+      "mkdir *": "allow",
+      "type *": "allow"
+    },
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "webfetch": "allow",
+    "task": "allow",
+    "todowrite": "allow",
+    "skill": "allow",
+    "question": "allow"
+  },
+
+  "agent": {
+    "build": {
+      "mode": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "plan": {
+      "mode": "primary",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "git *": "allow",
+          "find *": "allow",
+          "grep *": "allow",
+          "cat *": "allow",
+          "ls *": "allow",
+          "npm run *": "allow",
+          "npx vitest *": "allow"
+        }
+      }
+    },
+    "architect": {
+      "description": "Architecture Agent. System design, module structure, pattern selection, interfaces. Does NOT implement code.",
+      "mode": "subagent",
+      "prompt": "{file:.claude/agents/architect.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "find *": "allow",
+          "cat *": "allow",
+          "ls *": "allow",
+          "grep *": "allow",
+          "git *": "allow"
+        }
+      }
+    },
+    "reviewer": {
+      "description": "Code Review Agent. Reviews code before merging, validates conventions, verifies tests.",
+      "mode": "subagent",
+      "prompt": "{file:.claude/agents/reviewer.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "git diff *": "allow",
+          "git log *": "allow",
+          "git status *": "allow",
+          "git show *": "allow",
+          "find *": "allow",
+          "cat *": "allow",
+          "grep *": "allow",
+          "npm run *": "allow",
+          "npx vitest *": "allow",
+          "npx eslint *": "allow"
+        }
+      }
+    },
+    "security-auditor": {
+      "description": "Security Audit Agent. OWASP Top 10, code vulnerabilities, dependency audit, secret scanning.",
+      "mode": "subagent",
+      "prompt": "{file:.claude/agents/security-auditor.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "npm audit *": "allow",
+          "npm outdated *": "allow",
+          "find *": "allow",
+          "grep *": "allow",
+          "cat *": "allow",
+          "git log *": "allow",
+          "ls *": "allow"
+        }
+      }
+    },
+    "tester": {
+      "description": "Testing and QA Agent. Test plans, writes tests, verifies coverage. Mission: BREAK EVERYTHING.",
+      "mode": "subagent",
+      "prompt": "{file:.claude/agents/tester.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "ask",
+          "npx vitest *": "allow",
+          "npx jest *": "allow",
+          "npm run *": "allow",
+          "npm test *": "allow",
+          "npx eslint *": "allow",
+          "cat *": "allow",
+          "find *": "allow",
+          "grep *": "allow"
+        }
+      }
+    },
+    "orchestrator": {
+      "description": "Pipeline Orchestrator. 7-phase gated pipeline director. Only agent authorized to declare GO/NO-GO.",
+      "mode": "subagent",
+      "prompt": "{file:.claude/agents/orchestrator.md}",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "ask",
+          "git *": "allow",
+          "npm *": "allow",
+          "npx *": "allow",
+          "node *": "allow",
+          "find *": "allow",
+          "grep *": "allow",
+          "cat *": "allow",
+          "ls *": "allow"
+        }
+      }
+    }
+  },
+
+  "command": {
+    "audit": {
+      "template": "{file:.claude/commands/audit.md}",
+      "description": "Full project audit (code, tests, security, conventions)",
+      "agent": "security-auditor"
+    },
+    "security": {
+      "template": "{file:.claude/commands/security.md}",
+      "description": "Security audit (OWASP Top 10)",
+      "agent": "security-auditor"
+    },
+    "checkpoint": {
+      "template": "{file:.claude/commands/checkpoint.md}",
+      "description": "Generate session checkpoint"
+    },
+    "handoff": {
+      "template": "{file:.claude/commands/handoff.md}",
+      "description": "Generate handoff document"
+    },
+    "test": {
+      "template": "{file:.claude/commands/test.md}",
+      "description": "Run tests with coverage",
+      "agent": "tester"
+    },
+    "architect": {
+      "template": "{file:.claude/commands/architect.md}",
+      "description": "Architecture analysis and design proposal",
+      "agent": "architect"
+    },
+    "plan": {
+      "template": "{file:.claude/commands/plan.md}",
+      "description": "Plan a feature before implementation"
+    },
+    "review": {
+      "template": "{file:.claude/commands/review.md}",
+      "description": "Code review of current changes",
+      "agent": "reviewer"
+    },
+    "deploy": {
+      "template": "{file:.claude/commands/deploy.md}",
+      "description": "Deploy to production"
+    }
+  },
+
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 10000
+  },
+
+  "formatter": true,
+  "lsp": true,
+
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      ".git/**",
+      ".claude/logs/**"
+    ]
+  }
+}

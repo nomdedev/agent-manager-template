@@ -1,0 +1,95 @@
+{
+  "model": "claude-sonnet-4-20250514",
+  "enableAllProjectMcpServers": true,
+  "permissions": {
+    "allow": [
+      "Bash(git:*)", "Bash(npm:*)", "Bash(yarn:*)", "Bash(pnpm:*)",
+      "Bash(node:*)", "Bash(npx:*)", "Bash(python:*)", "Bash(python3:*)", "Bash(pip:*)",
+      "Bash(pytest:*)", "Bash(jest:*)", "Bash(vitest:*)", "Bash(eslint:*)",
+      "Bash(prettier:*)", "Bash(tsc:*)", "Bash(cat:*)", "Bash(ls:*)",
+      "Bash(find:*)", "Bash(grep:*)", "Bash(echo:*)", "Bash(mkdir:*)",
+      "Bash(cp:*)", "Bash(mv:*)", "Bash(touch:*)", "Bash(curl:*)",
+      "Bash(jq:*)", "Bash(wc:*)", "Bash(head:*)", "Bash(tail:*)",
+      "Bash(diff:*)", "Bash(sed:*)", "Bash(awk:*)", "Bash(which:*)",
+      "Bash(rg:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)", "Bash(rm -rf ~)", "Bash(dd:*)", "Bash(mkfs:*)",
+      "Bash(fdisk:*)", "Bash(shutdown:*)", "Bash(reboot:*)", "Bash(halt:*)",
+      "Bash(passwd:*)", "Bash(sudo rm -rf *)", "Bash(curl * | bash)", "Bash(wget * | bash)",
+      "Bash(cat .env*)", "Bash(echo $*)", "Bash(printenv*)", "Bash(env | *)"
+    ]
+  },
+  "env": {
+    "CLAUDE_TOKEN_BUDGET_TASK": "4000",
+    "CLAUDE_TOKEN_BUDGET_SESSION": "30000",
+    "CLAUDE_CHECKPOINT_DIR": ".claude/logs/checkpoints",
+    "CLAUDE_AUDIT_LOG": ".claude/logs/audit.log",
+    "CLAUDE_FLOW_STATE_PATH": ".claude/logs/flow-state.json",
+    "CLAUDE_FAIL_ON_LINT_ERROR": "false",
+    "CLAUDE_FAIL_ON_TEST_ERROR": "false",
+    "CLAUDE_NOTIFY_AFTER_SECONDS": "30"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {"type": "command", "command": "bash .claude/hooks/PreToolUse/01-validate-dangerous-bash.sh"},
+          {"type": "command", "command": "bash .claude/hooks/PreToolUse/02-token-budget-guard.sh"},
+          {"type": "command", "command": "bash .claude/hooks/PreToolUse/04-git-push-main-guard.sh"},
+          {"type": "command", "command": "python .claude/hooks/PreToolUse/05-pipeline-phase-guard.py"}
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {"type": "command", "command": "python3 .claude/hooks/PreToolUse/03-write-security-scan.py"}
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {"type": "command", "command": "bash .claude/hooks/PostToolUse/02-lint-on-edit.sh"},
+          {"type": "command", "command": "bash .claude/hooks/PostToolUse/03-test-on-change.sh"},
+          {"type": "command", "command": "python .claude/hooks/PostToolUse/04-flow-stale-detector.py"}
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {"type": "command", "command": "bash .claude/hooks/PostToolUse/01-auto-checkpoint.sh"}
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [{"type": "command", "command": "bash .claude/hooks/PreCompact/01-session-summarizer.sh"}]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [{"type": "command", "command": "bash .claude/hooks/Notification/01-task-notifier.sh"}]
+      }
+    ]
+  },
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/d/martin/Proyectos/agent-manager-template"],
+      "env": {}
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/d/martin/Proyectos/agent-manager-template"],
+      "env": {}
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "env": {}
+    }
+  }
+}
