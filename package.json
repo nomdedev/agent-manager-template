@@ -4,6 +4,9 @@
   "description": "Template reutilizable de Agent Manager con ejemplo de AI Agent",
   "main": "dist/index.js",
   "type": "module",
+  "bin": {
+    "claudio": "./bin/claudio.cjs"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
@@ -18,7 +21,8 @@
     "test:e2e": "vitest run tests/e2e/",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "claudio": "tsx src/cli/claudio.ts"
   },
   "dependencies": {
     "fastify": "^5.2.0",

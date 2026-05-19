@@ -260,13 +260,14 @@ agent-manager-template/
 │   │   ├── domain.md         # Terminología de dominio y datos sensibles
 │   │   ├── frontend.md       # Tokens de color, estructura, estado, íconos
 │   │   └── html-first.md     # HTML sobre Markdown para outputs de agentes
-│   ├── skills/           # 9 skills especializados
+│   ├── skills/           # 10 skills especializados
 │   │   ├── skill-agent-design/
 │   │   ├── skill-api-design/
 │   │   ├── skill-code-review/
 │   │   ├── skill-debugging/
 │   │   ├── skill-documentation/
 │   │   ├── skill-git-workflow/
+│   │   ├── skill-hermes-levels/   # configurar Hermes Agent en 4 niveles
 │   │   ├── skill-html-artifacts/  # HTML specs, audits, flows, reviews
 │   │   ├── skill-refactoring/
 │   │   └── skill-testing/

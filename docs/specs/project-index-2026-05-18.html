@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Índice del Proyecto — Agent Manager Template — 2026-05-18</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2128;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --amber: #d29922;
+      --red: #f85149;
+      --blue: #58a6ff;
+      --purple: #bc8cff;
+      --cyan: #39d0d4;
+      --orange: #f0883e;
+      --pink: #ff7b72;
+      --sidebar-w: 220px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ──────────────────────────────────── */
+    nav {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 1.25rem 0;
+      flex-shrink: 0;
+    }
+    nav .logo {
+      padding: 0 1.25rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: .75rem;
+    }
+    nav .logo span { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    nav .logo div { font-size: 1rem; font-weight: 700; color: var(--blue); margin-top: .2rem; }
+    nav .section-label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: .75rem 1.25rem .25rem;
+    }
+    nav .nav-link {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .4rem 1.25rem;
+      color: var(--muted);
+      font-size: .82rem;
+      border-radius: 0;
+      transition: background .15s, color .15s;
+      width: 100%;
+      background: transparent;
+      border: 0;
+      text-align: left;
+      cursor: pointer;
+    }
+    nav .nav-link:hover { background: rgba(88,166,255,.08); color: var(--text); }
+    nav .nav-link.active { background: rgba(88,166,255,.12); color: var(--blue); border-right: 2px solid var(--blue); }
+    nav .nav-link .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .dot-blue { background: var(--blue); }
+    .dot-green { background: var(--green); }
+    .dot-amber { background: var(--amber); }
+    .dot-purple { background: var(--purple); }
+    .dot-red { background: var(--red); }
+    .dot-cyan { background: var(--cyan); }
+    .dot-orange { background: var(--orange); }
+    .dot-pink { background: var(--pink); }
+
+    /* ── MAIN ─────────────────────────────────────── */
+    main { flex: 1; overflow-y: auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(13,17,23,.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: .9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    header h1 { font-size: 1.05rem; font-weight: 700; }
+    header .meta { display: flex; align-items: center; gap: .75rem; }
+    .badge {
+      padding: .2rem .65rem;
+      border-radius: 9999px;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .badge-blue  { background: rgba(88,166,255,.15); color: var(--blue);   border: 1px solid rgba(88,166,255,.3); }
+    .badge-green { background: rgba(63,185,80,.12);  color: var(--green);  border: 1px solid rgba(63,185,80,.3); }
+    .badge-amber { background: rgba(210,153,34,.12); color: var(--amber);  border: 1px solid rgba(210,153,34,.3); }
+    .badge-purple{ background: rgba(188,140,255,.12);color: var(--purple); border: 1px solid rgba(188,140,255,.3); }
+    .badge-red   { background: rgba(248,81,73,.12);  color: var(--red);    border: 1px solid rgba(248,81,73,.3); }
+    .badge-cyan  { background: rgba(57,208,212,.12); color: var(--cyan);   border: 1px solid rgba(57,208,212,.3); }
+    .badge-orange{ background: rgba(240,136,62,.12); color: var(--orange); border: 1px solid rgba(240,136,62,.3); }
+    .badge-pink  { background: rgba(255,123,114,.12);color: var(--pink);   border: 1px solid rgba(255,123,114,.3); }
+
+    /* ── SEARCH ───────────────────────────────────── */
+    .search-wrap { padding: 1.5rem 2rem .5rem; }
+    .search-wrap input {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: .55rem 1rem;
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .search-wrap input:focus { border-color: var(--blue); }
+    .search-wrap input::placeholder { color: var(--muted); }
+
+    /* ── CONTENT ──────────────────────────────────── */
+    .content { padding: .5rem 2rem 4rem; }
+
+    section.page { display: none; }
+    section.page.visible { display: block; }
+
+    h2.section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 2rem 0 .5rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .section-subtitle { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
+
+    /* ── CARDS ────────────────────────────────────── */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      transition: border-color .2s;
+      position: relative;
+    }
+    .card:hover { border-color: rgba(88,166,255,.35); }
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; }
+    .card-title { font-weight: 700; font-size: .95rem; }
+    .card-meta { font-size: .78rem; color: var(--muted); margin-bottom: .6rem; }
+    .card-desc { font-size: .82rem; color: var(--muted); line-height: 1.55; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .75rem; }
+    .tag {
+      font-size: .7rem;
+      padding: .15rem .55rem;
+      border-radius: 4px;
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .resource-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin: 0 0 1.25rem;
+    }
+    .resource-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .3rem .7rem;
+      border-radius: 9999px;
+      background: rgba(88,166,255,.12);
+      color: var(--blue);
+      border: 1px solid rgba(88,166,255,.25);
+      text-decoration: none;
+      font-size: .74rem;
+      font-weight: 600;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .resource-link:hover {
+      background: rgba(88,166,255,.2);
+      border-color: rgba(88,166,255,.4);
+      color: var(--text);
+    }
+    .resource-link::after {
+      content: '↗';
+      font-size: .72rem;
+    }
+
+    /* ── EXPANDABLE ───────────────────────────────── */
+    details { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: .75rem; overflow: hidden; }
+    details[open] { border-color: rgba(88,166,255,.3); }
+    summary {
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+      user-select: none;
+      font-weight: 600;
+      font-size: .9rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '▸'; color: var(--muted); font-size: .75rem; transition: transform .2s; }
+    details[open] summary::after { transform: rotate(90deg); }
+    .details-body { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--border); margin-top: 0; }
+    .details-body p { color: var(--muted); font-size: .83rem; margin-top: .75rem; line-height: 1.6; }
+
+    /* ── PIPELINE ─────────────────────────────────── */
+    .pipeline { display: flex; gap: 0; margin-bottom: 2rem; overflow-x: auto; padding-bottom: .5rem; }
+    .phase {
+      flex: 1;
+      min-width: 130px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-right: none;
+      padding: 1rem .9rem;
+      position: relative;
+      transition: background .2s;
+    }
+    .phase:first-child { border-radius: 10px 0 0 10px; }
+    .phase:last-child  { border-radius: 0 10px 10px 0; border-right: 1px solid var(--border); }
+    .phase:hover { background: var(--surface2); }
+    .phase-num {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .35rem;
+    }
+    .phase-name { font-weight: 700; font-size: .82rem; margin-bottom: .4rem; }
+    .phase-team { font-size: .7rem; color: var(--muted); margin-bottom: .5rem; }
+    .phase-arrow {
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 10px solid var(--border);
+      z-index: 2;
+    }
+    .phase:last-child .phase-arrow { display: none; }
+    .phase-gate { font-size: .7rem; color: var(--green); margin-top: .4rem; }
+
+    /* ── TABLE ────────────────────────────────────── */
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .83rem; }
+    th {
+      text-align: left;
+      padding: .6rem .9rem;
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: .6rem .9rem;
+      border-bottom: 1px solid rgba(48,54,61,.6);
+      vertical-align: top;
+    }
+    tr:hover td { background: rgba(255,255,255,.02); }
+    td code {
+      background: rgba(88,166,255,.1);
+      color: var(--blue);
+      padding: .1rem .4rem;
+      border-radius: 4px;
+      font-size: .8rem;
+      font-family: 'SF Mono', 'Cascadia Code', monospace;
+    }
+
+    /* ── CODE BLOCK ───────────────────────────────── */
+    pre {
+      background: #010409;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+      font-size: .8rem;
+      color: #c9d1d9;
+      margin-top: .75rem;
+      line-height: 1.55;
+    }
+
+    /* ── HERMES LEVELS ────────────────────────────── */
+    .levels-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-bottom: 2rem; }
+    @media (max-width: 800px) { .levels-grid { grid-template-columns: 1fr; } }
+    .level-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .level-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .l1::before { background: var(--blue); }
+    .l2::before { background: var(--green); }
+    .l3::before { background: var(--amber); }
+    .l4::before { background: var(--purple); }
+    .level-num { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .level-title { font-size: 1rem; font-weight: 700; margin: .3rem 0 .5rem; }
+    .level-flow {
+      font-family: 'SF Mono', monospace;
+      font-size: .72rem;
+      color: var(--muted);
+      background: rgba(0,0,0,.3);
+      padding: .5rem .75rem;
+      border-radius: 6px;
+      margin: .6rem 0;
+    }
+    .level-cases { font-size: .78rem; color: var(--muted); }
+    .level-cases li { margin-top: .2rem; list-style: disc; margin-left: 1.2rem; }
+
+    /* ── STAT PILLS ───────────────────────────────── */
+    .stats { display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 2rem; }
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .9rem 1.25rem;
+      min-width: 120px;
+      text-align: center;
+    }
+    .stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .stat-label { font-size: .72rem; color: var(--muted); margin-top: .25rem; text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── HOOKS GRID ───────────────────────────────── */
+    .hook-type-label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin: 1.5rem 0 .6rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .hook-type-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── RULE CARDS ───────────────────────────────── */
+    .rule-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 10px 10px 0;
+      padding: 1rem 1.25rem;
+      margin-bottom: .75rem;
+    }
+    .rule-card h3 { font-size: .9rem; margin-bottom: .3rem; }
+    .rule-card p { font-size: .82rem; color: var(--muted); }
+
+    /* ── FILE TREE ────────────────────────────────── */
+    .tree { font-family: 'SF Mono', monospace; font-size: .78rem; line-height: 1.8; color: var(--muted); }
+    .tree .dir { color: var(--blue); }
+    .tree .file { color: var(--text); }
+    .tree .comment { color: var(--muted); }
+    .tree-wrap { background: #010409; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; }
+
+    /* ── PERMISSION MATRIX ────────────────────────── */
+    .perm-allow { color: var(--green); font-size: .75rem; }
+    .perm-deny  { color: var(--red);   font-size: .75rem; }
+    .perm-ask   { color: var(--amber); font-size: .75rem; }
+
+    /* ── SCROLL SPY ───────────────────────────────── */
+    html { scroll-behavior: smooth; }
+
+    /* ── FOOTER ───────────────────────────────────── */
+    .feedback-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-top: 2rem;
+    }
+    .feedback-wrap h3 { font-size: .9rem; margin-bottom: .5rem; }
+    .feedback-wrap textarea {
+      width: 100%;
+      min-height: 80px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: .6rem .8rem;
+      font-size: .82rem;
+      resize: vertical;
+      outline: none;
+    }
+    .feedback-wrap textarea:focus { border-color: var(--blue); }
+    .btn {
+      margin-top: .5rem;
+      background: rgba(88,166,255,.15);
+      border: 1px solid rgba(88,166,255,.3);
+      color: var(--blue);
+      padding: .45rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: .8rem;
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .btn:hover { background: rgba(88,166,255,.25); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════ SIDEBAR ══ -->
+<nav>
+  <div class="logo">
+    <span>Proyecto</span>
+    <div>Agent Manager</div>
+  </div>
+
+  <div class="section-label">Visión general</div>
+  <button type="button" onclick="show('overview')" class="nav-link active" data-section="overview" aria-controls="overview">
+    <span class="dot dot-blue"></span> Dashboard
+  </button>
+
+  <div class="section-label">Equipo de agentes</div>
+  <button type="button" onclick="show('agents')" class="nav-link" data-section="agents" aria-controls="agents">
+    <span class="dot dot-purple"></span> 7 Agentes
+  </button>
+
+  <div class="section-label">Conocimiento</div>
+  <button type="button" onclick="show('skills')" class="nav-link" data-section="skills" aria-controls="skills">
+    <span class="dot dot-cyan"></span> 10 Skills
+  </button>
+  <button type="button" onclick="show('commands')" class="nav-link" data-section="commands" aria-controls="commands">
+    <span class="dot dot-green"></span> 12 Comandos slash
+  </button>
+
+  <div class="section-label">Automatización</div>
+  <button type="button" onclick="show('hooks')" class="nav-link" data-section="hooks" aria-controls="hooks">
+    <span class="dot dot-amber"></span> 11 Hooks
+  </button>
+
+  <div class="section-label">Metodología</div>
+  <button type="button" onclick="show('pipeline')" class="nav-link" data-section="pipeline" aria-controls="pipeline">
+    <span class="dot dot-orange"></span> Pipeline 7 fases
+  </button>
+  <button type="button" onclick="show('hermes')" class="nav-link" data-section="hermes" aria-controls="hermes">
+    <span class="dot dot-pink"></span> Hermes — 4 niveles
+  </button>
+  <button type="button" onclick="show('rules')" class="nav-link" data-section="rules" aria-controls="rules">
+    <span class="dot dot-red"></span> 5 Reglas
+  </button>
+
+  <div class="section-label">Proyecto</div>
+  <button type="button" onclick="show('structure')" class="nav-link" data-section="structure" aria-controls="structure">
+    <span class="dot dot-blue"></span> Estructura
+  </button>
+  <button type="button" onclick="show('testing')" class="nav-link" data-section="testing" aria-controls="testing">
+    <span class="dot dot-amber"></span> Testing
+  </button>
+  <button type="button" onclick="show('docs-knowledge')" class="nav-link" data-section="docs-knowledge" aria-controls="docs-knowledge">
+    <span class="dot dot-purple"></span> Docs & Memoria
+  </button>
+  <button type="button" onclick="show('stack')" class="nav-link" data-section="stack" aria-controls="stack">
+    <span class="dot dot-green"></span> Stack & CLI
+  </button>
+</nav>
+
+<!-- ══════════════════════════════════════════ MAIN ════ -->
+<main>
+  <header>
+    <h1>Agent Manager Template — Índice del Proyecto</h1>
+    <div class="meta">
+      <span class="badge badge-green">ACTIVO</span>
+      <span style="color:var(--muted);font-size:.78rem;">2026-05-18</span>
+    </div>
+  </header>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Buscar en el proyecto... (agentes, skills, hooks, comandos...)" oninput="filterCards(this.value)">
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════════════════════ OVERVIEW ══════════════════════════════ -->
+    <section class="page visible" id="overview">
+      <h2 class="section-title">📋 Dashboard del Proyecto</h2>
+      <p class="section-subtitle">Agent Manager Template — Setup profesional de Claude Code con pipeline de 7 fases, agentes especializados y automatización de calidad.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../README.md" target="_blank" rel="noopener noreferrer">README</a>
+        <a class="resource-link" href="../../.claude/CLAUDE.md" target="_blank" rel="noopener noreferrer">CLAUDE.md</a>
+        <a class="resource-link" href="../../.claude/settings.json" target="_blank" rel="noopener noreferrer">settings.json</a>
+        <a class="resource-link" href="../flows/project-architecture-map-2026-05-18.html" target="_blank" rel="noopener noreferrer">Mapa de relaciones</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-num" style="color:var(--purple)">7</div><div class="stat-label">Agentes</div></div>
+        <div class="stat"><div class="stat-num" style="color:var(--cyan)">10</div><div class="stat-label">Skills</div></div>
+        <div class="stat"><div class="stat-num" style="color:var(--green)">12</div><div class="stat-label">Comandos</div></div>
+        <div class="stat"><div class="stat-num" style="color:var(--amber)">11</div><div class="stat-label">Hooks</div></div>
+        <div class="stat"><div class="stat-num" style="color:var(--orange)">7</div><div class="stat-label">Fases</div></div>
+        <div class="stat"><div class="stat-num" style="color:var(--red)">5</div><div class="stat-label">Reglas</div></div>
+        <div class="stat"><div class="stat-num" style="color:var(--pink)">4</div><div class="stat-label">Niveles Hermes</div></div>
+      </div>
+
+      <h2 class="section-title">🗺 Mapa del sistema</h2>
+      <p class="section-subtitle">Cómo interactúan los componentes entre sí.</p>
+
+      <table>
+        <thead><tr><th>Componente</th><th>Ubicación</th><th>Propósito</th><th>Cuándo se activa</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agentes</strong></td><td><code>.claude/agents/</code></td><td>Roles especializados con permisos y protocolos definidos</td><td>Via <code>runSubagent()</code> o el pipeline de fases</td></tr>
+          <tr><td><strong>Skills</strong></td><td><code>.claude/skills/</code></td><td>Conocimiento especializado cargable on-demand</td><td>Cuando el agente o el usuario invoca una tarea específica</td></tr>
+          <tr><td><strong>Comandos slash</strong></td><td><code>.claude/commands/</code></td><td>Accesos directos a workflows frecuentes</td><td><code>/audit</code>, <code>/security</code>, <code>/test</code>, etc.</td></tr>
+          <tr><td><strong>Hooks</strong></td><td><code>.claude/hooks/</code></td><td>Automatización y guardrails en tiempo real</td><td>PreToolUse / PostToolUse / PreCompact / Notification</td></tr>
+          <tr><td><strong>Reglas</strong></td><td><code>.claude/rules/</code></td><td>Constraints no negociables del proyecto</td><td>Cargadas en el contexto de cada agente</td></tr>
+          <tr><td><strong>Pipeline</strong></td><td><code>.claude/rules/orchestration.md</code></td><td>7 fases gated con gates de salida verificables</td><td>Toda feature, bugfix o refactor relevante</td></tr>
+          <tr><td><strong>CLI claudio</strong></td><td><code>bin/claudio.cjs</code></td><td>Instalar el setup en cualquier proyecto</td><td><code>claudio evoluciona</code>, <code>claudio hermes</code></td></tr>
+          <tr><td><strong>Vault Obsidian</strong></td><td><code>obsidian/</code></td><td>Memoria extendida del proyecto</td><td>Sincronizado via <code>claudio hermes optimize</code></td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-title">⚡ Inicio rápido</h2>
+      <pre>
+# Instalar dependencias
+pnpm install
+
+# Ejecutar el CLI de setup
+pnpm run claudio -- hermes install
+pnpm run claudio -- hermes init programmer
+
+# Iniciar dev server
+pnpm run dev
+
+# Correr tests
+pnpm test
+
+# Auditoría completa
+# En Claude Code: /audit
+</pre>
+    </section>
+
+    <!-- ═══════════════════════ AGENTS ════════════════════════════════ -->
+    <section class="page" id="agents">
+      <h2 class="section-title">🤖 Los 7 Agentes Especializados</h2>
+      <p class="section-subtitle">Cada agente tiene un rol único, permisos restringidos, y un protocolo de output definido. Se invocan via <code>runSubagent()</code> o por el orquestador del pipeline.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../.claude/agents/architect.md" target="_blank" rel="noopener noreferrer">architect.md</a>
+        <a class="resource-link" href="../../.claude/agents/domain-expert.md" target="_blank" rel="noopener noreferrer">domain-expert.md</a>
+        <a class="resource-link" href="../../.claude/agents/frontend-expert.md" target="_blank" rel="noopener noreferrer">frontend-expert.md</a>
+        <a class="resource-link" href="../../.claude/agents/orchestrator.md" target="_blank" rel="noopener noreferrer">orchestrator.md</a>
+        <a class="resource-link" href="../../.claude/agents/reviewer.md" target="_blank" rel="noopener noreferrer">reviewer.md</a>
+        <a class="resource-link" href="../../.claude/agents/security-auditor.md" target="_blank" rel="noopener noreferrer">security-auditor.md</a>
+        <a class="resource-link" href="../../.claude/agents/tester.md" target="_blank" rel="noopener noreferrer">tester.md</a>
+      </div>
+
+      <!-- ARCHITECT -->
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-blue">architect</span>
+            Architecture Agent — diseño de sistema, módulos, interfaces
+          </span>
+        </summary>
+        <div class="details-body">
+          <p><strong>Identidad:</strong> Diseña antes de que se escriba una línea de código. No implementa. Define estructuras y contratos.</p>
+          <p style="margin-top:.5rem"><strong>Triggers:</strong> "diseña esto", "propuesta arquitectónica", "fase 2", "interfaz pública", "árbol de archivos"</p>
+          <table style="margin-top:.75rem">
+            <tr><th>Permiso</th><th>Valor</th></tr>
+            <tr><td>edit</td><td><span class="perm-deny">✗ deny</span></td></tr>
+            <tr><td>bash *</td><td><span class="perm-deny">✗ deny</span></td></tr>
+            <tr><td>find/cat/grep/ls/git/npm run</td><td><span class="perm-allow">✓ allow</span></td></tr>
+          </table>
+          <p style="margin-top:.75rem"><strong>Protocolo de output:</strong> Opciones evaluadas (A vs B), decisión con justificación, árbol de archivos (crear/modificar/eliminar), interfaces TypeScript, supuestos explícitos.</p>
+          <p style="margin-top:.5rem"><strong>Gate de salida:</strong> APROBADO cuando el diseño es mínimo, no especulativo, y respeta constraints inmutables.</p>
+        </div>
+      </details>
+
+      <!-- DOMAIN EXPERT -->
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-green">domain-expert</span>
+            Domain Expert — validación de lógica de negocio
+          </span>
+        </summary>
+        <div class="details-body">
+          <p><strong>Identidad:</strong> Valida que la lógica de negocio, terminología, flujos y modelos de datos reflejen el dominio real del proyecto. No escribe código.</p>
+          <p style="margin-top:.5rem"><strong>Triggers:</strong> "valida este flujo", "¿tiene sentido esto en el dominio?", "terminología correcta", "review de negocio"</p>
+          <table style="margin-top:.75rem">
+            <tr><th>Permiso</th><th>Valor</th></tr>
+            <tr><td>edit</td><td><span class="perm-deny">✗ deny</span></td></tr>
+            <tr><td>bash *</td><td><span class="perm-deny">✗ deny</span></td></tr>
+            <tr><td>cat/find/grep</td><td><span class="perm-allow">✓ allow</span></td></tr>
+          </table>
+          <p style="margin-top:.75rem"><strong>Validaciones:</strong> Flow validation, terminology check, KPI relevance, scope clarity, sensitive data audit, automation logic.</p>
+          <p style="margin-top:.5rem"><strong>Lee siempre:</strong> <code>.claude/rules/domain.md</code> antes de cualquier tarea.</p>
+        </div>
+      </details>
+
+      <!-- FRONTEND EXPERT -->
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-purple">frontend-expert</span>
+            Frontend Expert — implementación de UI y componentes
+          </span>
+        </summary>
+        <div class="details-body">
+          <p><strong>Identidad:</strong> Experto en el stack frontend del proyecto. Implementa componentes, páginas e interacciones siguiendo las convenciones del proyecto.</p>
+          <p style="margin-top:.5rem"><strong>Triggers:</strong> "implementa UI", "crea componente", "build view", "estiliza esto", "agrega página"</p>
+          <p style="margin-top:.75rem"><strong>Convenciones que aplica:</strong></p>
+          <ul style="margin-top:.4rem;margin-left:1.2rem;font-size:.82rem;color:var(--muted)">
+            <li>Design tokens CSS (no hardcodear valores)</li>
+            <li><code>cn()</code> para clases condicionales (nunca template literals)</li>
+            <li>Componentes en <code>src/components/</code>, páginas en <code>src/pages/</code></li>
+            <li>No <code>any</code> en TypeScript — <code>unknown</code> + type guards</li>
+            <li>Iconos de <code>lucide-react</code>, tamaños 14/16/18/20px</li>
+            <li><code>useMemo</code>/<code>useCallback</code> para objetos en render</li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- ORCHESTRATOR -->
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-orange">orchestrator</span>
+            Orchestrator — coordinación del pipeline de 7 fases
+          </span>
+        </summary>
+        <div class="details-body">
+          <p><strong>Identidad:</strong> Coordina el pipeline secuencial de 7 fases entre 6 equipos. Enruta tareas, verifica gates, maneja rebotes, autoriza transiciones. No implementa código (excepto en Fase 7 para verificación).</p>
+          <p style="margin-top:.5rem"><strong>Triggers:</strong> "orquestar", "iniciar pipeline", "autorizar paso", "GO/NO-GO", "estado del pipeline", "rebote"</p>
+          <p style="margin-top:.75rem"><strong>Responsabilidades clave:</strong></p>
+          <ul style="margin-top:.4rem;margin-left:1.2rem;font-size:.82rem;color:var(--muted)">
+            <li>Crear entrada en <code>pipeline-state.json</code> para cada feature</li>
+            <li>Nunca dejar que Equipo 4 reciba tarea sin veredicto del Equipo 3</li>
+            <li>Nunca dejar pasar a Fase 7 sin veredicto del Equipo 5 (QA)</li>
+            <li>Guardar reportes en <code>.claude/logs/audits/features/{id}/{fase}-{fecha}.md</code></li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- REVIEWER -->
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-cyan">reviewer</span>
+            Reviewer — code review y protección de la codebase
+          </span>
+        </summary>
+        <div class="details-body">
+          <p><strong>Identidad:</strong> Revisa código antes de merge. Valida convenciones, verifica tests, detecta problemas. Protege la calidad de la codebase.</p>
+          <p style="margin-top:.5rem"><strong>Activa en:</strong> Fase 5 del pipeline (code review interno antes de QA), o por solicitud directa.</p>
+          <p style="margin-top:.75rem"><strong>Checklist estándar:</strong></p>
+          <ul style="margin-top:.4rem;margin-left:1.2rem;font-size:.82rem;color:var(--muted)">
+            <li>Sin <code>any</code> en TypeScript</li>
+            <li>Build pasa sin errores</li>
+            <li>Tests cubren los cambios</li>
+            <li>Sigue convenciones de nombre y estructura</li>
+            <li>No hay código especulativo ni abstracciones prematuras</li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- SECURITY AUDITOR -->
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-red">security-auditor</span>
+            Security Auditor — OWASP Top 10, misión encontrar todo
+          </span>
+        </summary>
+        <div class="details-body">
+          <p><strong>Identidad:</strong> Audita código, dependencias, configuraciones y datos sensibles. Compliance OWASP Top 10. Misión: encontrar cada vulnerabilidad.</p>
+          <table style="margin-top:.75rem">
+            <tr><th>Permiso</th><th>Valor</th></tr>
+            <tr><td>edit</td><td><span class="perm-deny">✗ deny</span></td></tr>
+            <tr><td>npm audit / npm outdated / find / grep / cat / git log / ls</td><td><span class="perm-allow">✓ allow</span></td></tr>
+          </table>
+          <p style="margin-top:.75rem"><strong>5 módulos de auditoría:</strong></p>
+          <ul style="margin-top:.4rem;margin-left:1.2rem;font-size:.82rem;color:var(--muted)">
+            <li>Módulo 1: Secretos (credenciales hardcodeadas, keys en cliente)</li>
+            <li>Módulo 2: Dependencias (CVEs, npm audit, outdated)</li>
+            <li>Módulo 3: Código (XSS, injection, eval, innerHTML)</li>
+            <li>Módulo 4: Infraestructura (HTTPS, stack traces expuestos)</li>
+            <li>Módulo 5: Vectores específicos del feature (auth, rate limiting, inputs)</li>
+          </ul>
+          <p style="margin-top:.5rem"><strong>Gate:</strong> APROBADO = sin hallazgos CRÍTICOS ni ALTOS sin mitigación. BLOQUEADO = rebota a Fase 2.</p>
+        </div>
+      </details>
+
+      <!-- TESTER -->
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-amber">tester</span>
+            Tester QA — misión: romper todo
+          </span>
+        </summary>
+        <div class="details-body">
+          <p><strong>Principio guía:</strong> <em>"A test that cannot fail when business logic changes is not a test."</em></p>
+          <p style="margin-top:.5rem"><strong>Stack:</strong> Vitest + Testing Library. Convención: <code>it('should &lt;behavior&gt; when &lt;condition&gt;')</code></p>
+          <table style="margin-top:.75rem">
+            <tr><th>Permiso</th><th>Valor</th></tr>
+            <tr><td>edit</td><td><span class="perm-allow">✓ allow</span></td></tr>
+            <tr><td>bash *</td><td><span class="perm-ask">? ask</span></td></tr>
+            <tr><td>vitest / jest / npm run / eslint / cat / find / grep</td><td><span class="perm-allow">✓ allow</span></td></tr>
+          </table>
+          <p style="margin-top:.75rem"><strong>Tipos de test requeridos por módulo:</strong></p>
+          <ul style="margin-top:.4rem;margin-left:1.2rem;font-size:.82rem;color:var(--muted)">
+            <li>Happy path — flujo normal exitoso</li>
+            <li>Empty/Null — datos faltantes o vacíos</li>
+            <li>Error — respuesta de error, estado inválido</li>
+            <li>Boundary — límites de valor (0 items, 1000 items)</li>
+            <li>Business rule — invariante específico del dominio</li>
+          </ul>
+          <p style="margin-top:.5rem"><strong>Regla de rebote:</strong> Si QA encuentra un bloqueante, rebota al equipo origen (Diseño/Backend/Seguridad/Develop). No avanza a Fase 7.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ═══════════════════════ SKILLS ════════════════════════════════ -->
+    <section class="page" id="skills">
+      <h2 class="section-title">🧠 Los 10 Skills Especializados</h2>
+      <p class="section-subtitle">Módulos de conocimiento cargados on-demand. El agente lee el SKILL.md cuando la tarea cae dentro del dominio del skill.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../.claude/skills/skill-agent-design/SKILL.md" target="_blank" rel="noopener noreferrer">skill-agent-design</a>
+        <a class="resource-link" href="../../.claude/skills/skill-api-design/SKILL.md" target="_blank" rel="noopener noreferrer">skill-api-design</a>
+        <a class="resource-link" href="../../.claude/skills/skill-code-review/SKILL.md" target="_blank" rel="noopener noreferrer">skill-code-review</a>
+        <a class="resource-link" href="../../.claude/skills/skill-debugging/SKILL.md" target="_blank" rel="noopener noreferrer">skill-debugging</a>
+        <a class="resource-link" href="../../.claude/skills/skill-documentation/SKILL.md" target="_blank" rel="noopener noreferrer">skill-documentation</a>
+        <a class="resource-link" href="../../.claude/skills/skill-git-workflow/SKILL.md" target="_blank" rel="noopener noreferrer">skill-git-workflow</a>
+        <a class="resource-link" href="../../.claude/skills/skill-hermes-levels/SKILL.md" target="_blank" rel="noopener noreferrer">skill-hermes-levels</a>
+        <a class="resource-link" href="../../.claude/skills/skill-html-artifacts/SKILL.md" target="_blank" rel="noopener noreferrer">skill-html-artifacts</a>
+        <a class="resource-link" href="../../.claude/skills/skill-refactoring/SKILL.md" target="_blank" rel="noopener noreferrer">skill-refactoring</a>
+        <a class="resource-link" href="../../.claude/skills/skill-testing/SKILL.md" target="_blank" rel="noopener noreferrer">skill-testing</a>
+      </div>
+
+      <div class="grid" id="skillsGrid">
+
+        <div class="card" data-tags="agentes diseño tool-use memoria">
+          <div class="card-header">
+            <span class="card-title">skill-agent-design</span>
+            <span class="badge badge-purple">Agentes</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-agent-design/</code></div>
+          <div class="card-desc">Diseñar o modificar agentes AI con tool use, memoria y system prompts. Cubre SOUL.md, MEMORY.md, permisos, protocolo de output.</div>
+          <div class="card-tags"><span class="tag">agentes</span><span class="tag">tool-use</span><span class="tag">memoria</span></div>
+        </div>
+
+        <div class="card" data-tags="api rest endpoints zod contratos">
+          <div class="card-header">
+            <span class="card-title">skill-api-design</span>
+            <span class="badge badge-blue">Backend</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-api-design/</code></div>
+          <div class="card-desc">Diseñar APIs REST: endpoints, schemas Zod, contratos de respuesta, manejo de errores, versionado. Shape validation en todas las capas.</div>
+          <div class="card-tags"><span class="tag">REST</span><span class="tag">Zod</span><span class="tag">endpoints</span><span class="tag">contratos</span></div>
+        </div>
+
+        <div class="card" data-tags="review código convenciones tipos">
+          <div class="card-header">
+            <span class="card-title">skill-code-review</span>
+            <span class="badge badge-cyan">Review</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-code-review/</code></div>
+          <div class="card-desc">Revisión estructurada de código: convenciones del proyecto, tipos TypeScript, tests existentes, patrones de error, métricas de complejidad.</div>
+          <div class="card-tags"><span class="tag">review</span><span class="tag">TypeScript</span><span class="tag">convenciones</span></div>
+        </div>
+
+        <div class="card" data-tags="debugging bugs diagnóstico hipótesis regresión">
+          <div class="card-header">
+            <span class="card-title">skill-debugging</span>
+            <span class="badge badge-red">Debug</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-debugging/</code></div>
+          <div class="card-desc">Diagnóstico sistemático: reproducir → minimizar → hipótesis → instrumentar → fix → test de regresión. Ciclo disciplinado para bugs difíciles.</div>
+          <div class="card-tags"><span class="tag">debugging</span><span class="tag">diagnóstico</span><span class="tag">regresión</span></div>
+        </div>
+
+        <div class="card" data-tags="documentación JSDoc ADRs diagramas">
+          <div class="card-header">
+            <span class="card-title">skill-documentation</span>
+            <span class="badge badge-green">Docs</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-documentation/</code></div>
+          <div class="card-desc">Generar documentación técnica: JSDoc, ADRs (Architecture Decision Records), diagramas de flujo, READMEs. Formatos: Markdown para código, HTML para reportes.</div>
+          <div class="card-tags"><span class="tag">JSDoc</span><span class="tag">ADR</span><span class="tag">diagramas</span></div>
+        </div>
+
+        <div class="card" data-tags="git workflow ramas commits PR merge">
+          <div class="card-header">
+            <span class="card-title">skill-git-workflow</span>
+            <span class="badge badge-amber">Git</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-git-workflow/</code></div>
+          <div class="card-desc">Flujo de ramas: <code>feat/</code> y <code>fix/</code> desde <code>main</code>. Commits convencionales, PRs con squash-merge, estrategia de merge.</div>
+          <div class="card-tags"><span class="tag">git</span><span class="tag">ramas</span><span class="tag">commits convencionales</span></div>
+        </div>
+
+        <div class="card" data-tags="hermes agentes niveles configuración SOUL orchestrator">
+          <div class="card-header">
+            <span class="card-title">skill-hermes-levels</span>
+            <span class="badge badge-pink">Hermes</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-hermes-levels/</code></div>
+          <div class="card-desc">Configurar Hermes Agent en el nivel correcto (1-4). Incluye diagnóstico de nivel apropiado, steps de setup por nivel, templates de SOUL.md, checklists y anti-patrones.</div>
+          <div class="card-tags"><span class="tag">Hermes</span><span class="tag">SOUL.md</span><span class="tag">niveles</span><span class="tag">orchestrator</span></div>
+        </div>
+
+        <div class="card" data-tags="HTML artefactos outputs reportes specs auditorías">
+          <div class="card-header">
+            <span class="card-title">skill-html-artifacts</span>
+            <span class="badge badge-orange">HTML</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-html-artifacts/</code></div>
+          <div class="card-desc">Generar artefactos HTML autocontenidos (dark mode, sin CDN externo) para outputs de agentes: specs, auditorías, code reviews, diagramas de flujo, dashboards.</div>
+          <div class="card-tags"><span class="tag">HTML</span><span class="tag">dark mode</span><span class="tag">reportes</span><span class="tag">self-contained</span></div>
+        </div>
+
+        <div class="card" data-tags="refactoring seguro tests comportamiento">
+          <div class="card-header">
+            <span class="card-title">skill-refactoring</span>
+            <span class="badge badge-blue">Refactor</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-refactoring/</code></div>
+          <div class="card-desc">Refactoring seguro sin cambiar el comportamiento externo. Siempre con tests primero, cambios atómicos, verificación de regresiones.</div>
+          <div class="card-tags"><span class="tag">refactoring</span><span class="tag">seguro</span><span class="tag">tests primero</span></div>
+        </div>
+
+        <div class="card" data-tags="testing unit integration e2e coverage mocks vitest">
+          <div class="card-header">
+            <span class="card-title">skill-testing</span>
+            <span class="badge badge-green">QA</span>
+          </div>
+          <div class="card-meta"><code>.claude/skills/skill-testing/</code></div>
+          <div class="card-desc">Estrategias de testing: unit, integration, e2e, coverage, mocks. Stack: Vitest + Supertest + Playwright. Umbral de cobertura: 80% v8.</div>
+          <div class="card-tags"><span class="tag">Vitest</span><span class="tag">unit</span><span class="tag">integration</span><span class="tag">e2e</span><span class="tag">coverage</span></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ COMMANDS ══════════════════════════════ -->
+    <section class="page" id="commands">
+      <h2 class="section-title">⚡ Los 12 Comandos Slash</h2>
+      <p class="section-subtitle">Accesos directos a workflows frecuentes. Se invocan en Claude Code con <code>/nombre</code>. Los argumentos se pasan con <code>$ARGUMENTS</code>.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../.claude/commands/architect.md" target="_blank" rel="noopener noreferrer">architect.md</a>
+        <a class="resource-link" href="../../.claude/commands/audit.md" target="_blank" rel="noopener noreferrer">audit.md</a>
+        <a class="resource-link" href="../../.claude/commands/checkpoint.md" target="_blank" rel="noopener noreferrer">checkpoint.md</a>
+        <a class="resource-link" href="../../.claude/commands/deploy.md" target="_blank" rel="noopener noreferrer">deploy.md</a>
+        <a class="resource-link" href="../../.claude/commands/domain.md" target="_blank" rel="noopener noreferrer">domain.md</a>
+        <a class="resource-link" href="../../.claude/commands/flows.md" target="_blank" rel="noopener noreferrer">flows.md</a>
+        <a class="resource-link" href="../../.claude/commands/frontend.md" target="_blank" rel="noopener noreferrer">frontend.md</a>
+        <a class="resource-link" href="../../.claude/commands/handoff.md" target="_blank" rel="noopener noreferrer">handoff.md</a>
+        <a class="resource-link" href="../../.claude/commands/plan.md" target="_blank" rel="noopener noreferrer">plan.md</a>
+        <a class="resource-link" href="../../.claude/commands/review.md" target="_blank" rel="noopener noreferrer">review.md</a>
+        <a class="resource-link" href="../../.claude/commands/security.md" target="_blank" rel="noopener noreferrer">security.md</a>
+        <a class="resource-link" href="../../.claude/commands/test.md" target="_blank" rel="noopener noreferrer">test.md</a>
+      </div>
+
+      <table>
+        <thead><tr><th>Comando</th><th>Descripción</th><th>Argumentos</th><th>Output</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>/audit</code></td>
+            <td>Auditoría completa del proyecto (código, tests, seguridad, convenciones)</td>
+            <td>—</td>
+            <td>Reporte con ✅/❌/⚠️ por sección</td>
+          </tr>
+          <tr>
+            <td><code>/security</code></td>
+            <td>Auditoría de seguridad OWASP Top 10</td>
+            <td><code>deps</code> <code>code</code> <code>secrets</code> <code>auth</code> <code>api</code> <code>all</code></td>
+            <td>CRITICAL🔴 HIGH🟠 MEDIUM🟡 LOW🟢</td>
+          </tr>
+          <tr>
+            <td><code>/test</code></td>
+            <td>Plan de tests + escritura + coverage de un módulo</td>
+            <td>Ruta del módulo o feature</td>
+            <td>Tests escritos + reporte de coverage</td>
+          </tr>
+          <tr>
+            <td><code>/review</code></td>
+            <td>Code review detallado de archivos modificados</td>
+            <td>Archivos o <code>staged</code></td>
+            <td>Reporte HTML con hallazgos y severidades</td>
+          </tr>
+          <tr>
+            <td><code>/architect</code></td>
+            <td>Propuesta arquitectónica para una feature o módulo</td>
+            <td>Descripción de la feature</td>
+            <td>Opciones A/B, árbol de archivos, interfaces</td>
+          </tr>
+          <tr>
+            <td><code>/plan</code></td>
+            <td>Plan de implementación con pasos, riesgos y criterios de éxito</td>
+            <td>Descripción del objetivo</td>
+            <td>Plan estructurado con checklist</td>
+          </tr>
+          <tr>
+            <td><code>/deploy</code></td>
+            <td>Checklist de deploy a producción + Go/No-Go</td>
+            <td><code>preview</code> <code>production</code></td>
+            <td>Reporte Fase 7 con veredicto GO/NO-GO</td>
+          </tr>
+          <tr>
+            <td><code>/checkpoint</code></td>
+            <td>Checkpoint de sesión: qué está hecho, verificado y pendiente</td>
+            <td>—</td>
+            <td>✅ DONE / ✔️ VERIFIED / ⏳ NEXT / ⚠️ RISKS</td>
+          </tr>
+          <tr>
+            <td><code>/handoff</code></td>
+            <td>Documento de traspaso para otra sesión o agente</td>
+            <td>—</td>
+            <td>Handoff doc en <code>.claude/logs/handoffs/</code></td>
+          </tr>
+          <tr>
+            <td><code>/flows</code></td>
+            <td>Diagrama de flujo de datos HTML de un módulo</td>
+            <td>Nombre del módulo o pestaña</td>
+            <td>HTML autocontenido en <code>docs/flows/</code></td>
+          </tr>
+          <tr>
+            <td><code>/domain</code></td>
+            <td>Validación de dominio: terminología, flujos, invariantes</td>
+            <td>Feature o entidad a validar</td>
+            <td>Reporte Fase 1 con veredicto APROBADO/BLOQUEADO</td>
+          </tr>
+          <tr>
+            <td><code>/frontend</code></td>
+            <td>Checklist frontend + implementación siguiendo convenciones</td>
+            <td>Componente o página a implementar</td>
+            <td>Componente implementado + checklist verificado</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════════════ HOOKS ═════════════════════════════════ -->
+    <section class="page" id="hooks">
+      <h2 class="section-title">🔗 Los 11 Hooks</h2>
+      <p class="section-subtitle">Automatización y guardrails en tiempo real. Se ejecutan antes/después de cada tool use, o en eventos especiales del ciclo de sesión.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../.claude/hooks/PreToolUse/01-validate-dangerous-bash.sh" target="_blank" rel="noopener noreferrer">PreToolUse 01</a>
+        <a class="resource-link" href="../../.claude/hooks/PreToolUse/02-token-budget-guard.sh" target="_blank" rel="noopener noreferrer">PreToolUse 02</a>
+        <a class="resource-link" href="../../.claude/hooks/PreToolUse/03-write-security-scan.py" target="_blank" rel="noopener noreferrer">PreToolUse 03</a>
+        <a class="resource-link" href="../../.claude/hooks/PreToolUse/04-git-push-main-guard.sh" target="_blank" rel="noopener noreferrer">PreToolUse 04</a>
+        <a class="resource-link" href="../../.claude/hooks/PreToolUse/05-pipeline-phase-guard.py" target="_blank" rel="noopener noreferrer">PreToolUse 05</a>
+        <a class="resource-link" href="../../.claude/hooks/PostToolUse/01-auto-checkpoint.sh" target="_blank" rel="noopener noreferrer">PostToolUse 01</a>
+        <a class="resource-link" href="../../.claude/hooks/PostToolUse/02-lint-on-edit.sh" target="_blank" rel="noopener noreferrer">PostToolUse 02</a>
+        <a class="resource-link" href="../../.claude/hooks/PostToolUse/03-test-on-change.sh" target="_blank" rel="noopener noreferrer">PostToolUse 03</a>
+        <a class="resource-link" href="../../.claude/hooks/PostToolUse/04-flow-stale-detector.py" target="_blank" rel="noopener noreferrer">PostToolUse 04</a>
+        <a class="resource-link" href="../../.claude/hooks/PreCompact/01-session-summarizer.sh" target="_blank" rel="noopener noreferrer">PreCompact 01</a>
+        <a class="resource-link" href="../../.claude/hooks/Notification/01-task-notifier.sh" target="_blank" rel="noopener noreferrer">Notification 01</a>
+      </div>
+
+      <!-- PreToolUse -->
+      <div class="hook-type-label">
+        <span class="badge badge-red" style="font-size:.65rem">PreToolUse</span>
+        Bloquean operaciones antes de ejecutarse — 5 hooks
+      </div>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-red">BLOCK</span>
+            01-validate-dangerous-bash.sh — Bash destructivo
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Lee el comando de stdin como JSON. Bloquea con <strong>exit 2</strong> (bloqueo total) si el comando coincide con patrones destructivos.</p>
+          <p style="margin-top:.5rem"><strong>Patrones bloqueados:</strong> <code>rm -rf /</code>, <code>rm -rf ~</code>, <code>dd if=/dev/zero</code>, <code>mkfs.</code>, <code>shutdown</code>, <code>reboot</code>, <code>curl * | bash</code>, <code>wget * | bash</code>, <code>cat .env</code>, <code>printenv</code>, <code>source .env</code>.</p>
+          <p style="margin-top:.5rem"><strong>Para suprimir false positives:</strong> agregar <code># claude-security-ok</code> al final de la línea.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-amber">WARN</span>
+            02-token-budget-guard.sh — Control de presupuesto de tokens
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Monitorea el consumo de tokens por sesión. Emite advertencia cuando se acerca al límite definido en las reglas del proyecto.</p>
+          <p style="margin-top:.5rem"><strong>Límites:</strong> 4,000 tokens por tarea / 30,000 por sesión (Rule 6).</p>
+          <p style="margin-top:.5rem"><strong>Acción:</strong> Surface de breach — no continúa silenciosamente sobre el límite.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-red">BLOCK</span>
+            03-write-security-scan.py — Scan de seguridad en escrituras
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Escanea el contenido de archivos antes de que se escriban/editen. Detecta patrones de seguridad críticos y los bloquea antes de que lleguen a la codebase.</p>
+          <table style="margin-top:.75rem">
+            <tr><th>Patrón</th><th>Nivel</th></tr>
+            <tr><td>Contraseña hardcodeada <code>password = "..."</code></td><td><span class="badge badge-red" style="font-size:.65rem">CRÍTICO</span></td></tr>
+            <tr><td>Connection string con credenciales embebidas</td><td><span class="badge badge-red" style="font-size:.65rem">CRÍTICO</span></td></tr>
+            <tr><td>Secret via prefijo <code>VITE_</code></td><td><span class="badge badge-red" style="font-size:.65rem">CRÍTICO</span></td></tr>
+            <tr><td><code>localStorage.setItem</code> con datos sensibles</td><td><span class="badge badge-red" style="font-size:.65rem">CRÍTICO</span></td></tr>
+            <tr><td><code>Authorization: Bearer xyz</code> hardcodeado</td><td><span class="badge badge-red" style="font-size:.65rem">CRÍTICO</span></td></tr>
+            <tr><td><code>console.log</code> con datos sensibles</td><td><span class="badge badge-amber" style="font-size:.65rem">WARNING</span></td></tr>
+            <tr><td><code>username: "admin"</code> hardcodeado</td><td><span class="badge badge-amber" style="font-size:.65rem">WARNING</span></td></tr>
+          </table>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-red">BLOCK</span>
+            04-git-push-main-guard.sh — Guard para push a main
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Bloquea <code>git push origin main</code> sin que los tests pasen primero. Previene merges accidentales de código roto a la rama principal.</p>
+          <p style="margin-top:.5rem"><strong>Flujo requerido:</strong> Pasar tests → push permitido. Sin tests → push bloqueado.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-amber">WARN</span>
+            05-pipeline-phase-guard.py — Guard del pipeline de fases
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Verifica que las operaciones de escritura no salteen fases del pipeline. Alerta cuando se intenta implementar código sin fases de diseño y seguridad aprobadas.</p>
+          <p style="margin-top:.5rem"><strong>Referencia:</strong> Lee <code>.claude/logs/pipeline-state.json</code> para verificar el estado actual de cada feature.</p>
+        </div>
+      </details>
+
+      <!-- PostToolUse -->
+      <div class="hook-type-label">
+        <span class="badge badge-green" style="font-size:.65rem">PostToolUse</span>
+        Se ejecutan después de cada tool use — 4 hooks
+      </div>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-green">AUTO</span>
+            01-auto-checkpoint.sh — Checkpoint automático
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Después de cada operación significativa, genera automáticamente un checkpoint en formato Rule 10: ✅ DONE / ✔️ VERIFIED / ⏳ NEXT / ⚠️ RISKS.</p>
+          <p style="margin-top:.5rem"><strong>Guardado:</strong> <code>.claude/logs/checkpoints/</code></p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-green">AUTO</span>
+            02-lint-on-edit.sh — Lint automático al editar
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Ejecuta ESLint automáticamente después de editar archivos TypeScript/JavaScript. Detecta errores de convención en el momento en que se introducen.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-green">AUTO</span>
+            03-test-on-change.sh — Tests automáticos al cambiar módulos
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Cuando se modifica un archivo en <code>src/</code>, ejecuta automáticamente los tests relacionados del módulo afectado. Detecta regresiones en el momento.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-amber">DETECT</span>
+            04-flow-stale-detector.py — Detector de flows desactualizados
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Detecta cuando los diagramas de flujo en <code>docs/flows/</code> pueden estar desactualizados respecto al código fuente. Alerta cuando un archivo fuente fue modificado después del último HTML de flujo generado.</p>
+        </div>
+      </details>
+
+      <!-- PreCompact -->
+      <div class="hook-type-label">
+        <span class="badge badge-purple" style="font-size:.65rem">PreCompact</span>
+        Se ejecuta antes de compactar la sesión — 1 hook
+      </div>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-purple">PRESERVE</span>
+            01-session-summarizer.sh — Resumen de sesión
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Antes de compactar el contexto, genera un resumen estructurado de la sesión actual. Preserva el contexto crítico para no perder estado después del compactado.</p>
+          <p style="margin-top:.5rem"><strong>Guardado:</strong> <code>.claude/logs/checkpoints/session-{fecha}.md</code></p>
+        </div>
+      </details>
+
+      <!-- Notification -->
+      <div class="hook-type-label">
+        <span class="badge badge-cyan" style="font-size:.65rem">Notification</span>
+        Notificaciones del sistema — 1 hook
+      </div>
+
+      <details>
+        <summary>
+          <span style="display:flex;align-items:center;gap:.75rem">
+            <span class="badge badge-cyan">NOTIFY</span>
+            01-task-notifier.sh — Notificador de tareas
+          </span>
+        </summary>
+        <div class="details-body">
+          <p>Envía notificaciones del sistema cuando se completan tareas largas o cuando el pipeline de fases cambia de estado. Permite trabajar en paralelo sin perder eventos.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ═══════════════════════ PIPELINE ══════════════════════════════ -->
+    <section class="page" id="pipeline">
+      <h2 class="section-title">🔄 Pipeline de 7 Fases</h2>
+      <p class="section-subtitle">Todo feature, bugfix o refactor que afecte lógica de negocio, UI con estado, APIs o base de datos DEBE pasar por las 7 fases. No hay excepciones.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../.claude/rules/orchestration.md" target="_blank" rel="noopener noreferrer">orchestration.md</a>
+        <a class="resource-link" href="../../.claude/logs/pipeline-state.json" target="_blank" rel="noopener noreferrer">pipeline-state.json</a>
+        <a class="resource-link" href="../../.claude/logs/README.md" target="_blank" rel="noopener noreferrer">logs/README.md</a>
+        <a class="resource-link" href="../flows/project-architecture-map-2026-05-18.html" target="_blank" rel="noopener noreferrer">Mapa de relaciones</a>
+      </div>
+
+      <div class="pipeline">
+        <div class="phase">
+          <div class="phase-num">Fase 1</div>
+          <div class="phase-name" style="color:var(--green)">Dominio</div>
+          <div class="phase-team">domain-expert</div>
+          <div class="card-tags"><span class="tag">Equipo 1: Diseño</span></div>
+          <div class="phase-gate">Gate: Req. validados</div>
+          <div class="phase-arrow"></div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Fase 2</div>
+          <div class="phase-name" style="color:var(--blue)">Arquitectura</div>
+          <div class="phase-team">architect</div>
+          <div class="card-tags"><span class="tag">Equipo 1: Diseño</span></div>
+          <div class="phase-gate">Gate: Diseño aprobado</div>
+          <div class="phase-arrow"></div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Fase 3</div>
+          <div class="phase-name" style="color:var(--cyan)">Backend</div>
+          <div class="phase-team">architect + orch.</div>
+          <div class="card-tags"><span class="tag">Equipo 2</span></div>
+          <div class="phase-gate">Gate: API + schema OK</div>
+          <div class="phase-arrow"></div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Fase 4</div>
+          <div class="phase-name" style="color:var(--red)">Seguridad</div>
+          <div class="phase-team">security-auditor</div>
+          <div class="card-tags"><span class="tag">Equipo 3</span></div>
+          <div class="phase-gate">Gate: Sin CRÍTICOS</div>
+          <div class="phase-arrow"></div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Fase 5</div>
+          <div class="phase-name" style="color:var(--purple)">Develop</div>
+          <div class="phase-team">developer + reviewer</div>
+          <div class="card-tags"><span class="tag">Equipo 4</span></div>
+          <div class="phase-gate">Gate: Build exitoso</div>
+          <div class="phase-arrow"></div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Fase 6</div>
+          <div class="phase-name" style="color:var(--amber)">QA</div>
+          <div class="phase-team">tester</div>
+          <div class="card-tags"><span class="tag">Equipo 5</span></div>
+          <div class="phase-gate">Gate: Tests pasan</div>
+          <div class="phase-arrow"></div>
+        </div>
+        <div class="phase">
+          <div class="phase-num">Fase 7</div>
+          <div class="phase-name" style="color:var(--green)">Producción</div>
+          <div class="phase-team">orchestrator</div>
+          <div class="card-tags"><span class="tag">Equipo 6</span></div>
+          <div class="phase-gate">Veredicto: GO / NO-GO</div>
+        </div>
+      </div>
+
+      <h2 class="section-title" style="font-size:1rem;margin-top:1.5rem">📋 Gates y reglas de rebote</h2>
+
+      <table>
+        <thead><tr><th>Regla</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Regla de oro #1</strong></td><td>Si un equipo devuelve BLOQUEADO, el pipeline se detiene. Se crea tarea de corrección, se resuelve, y se <strong>re-ingresa al equipo que la originó</strong>. Nunca se saltea una fase.</td></tr>
+          <tr><td><strong>Regla de oro #2</strong></td><td>Si QA (Fase 6) encuentra un bloqueante, el feature NO avanza a Fase 7. Se determina la raíz y se rebota al equipo correspondiente (1, 2, 3 o 4).</td></tr>
+          <tr><td><strong>Regla de oro #3</strong></td><td>El Equipo 4 (Develop) NO recibe la tarea si el Equipo 3 (Seguridad) no emitió veredicto APROBADO.</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th>Tipo de defecto en QA</th><th>Equipo de rebote</th><th>Fase de reinicio</th></tr></thead>
+        <tbody>
+          <tr><td>Lógica de negocio incorrecta</td><td>Equipo 1 (Diseño)</td><td>Fase 2 (Arquitectura)</td></tr>
+          <tr><td>Schema/API roto o inconsistente</td><td>Equipo 2 (Backend)</td><td>Fase 3 (Backend)</td></tr>
+          <tr><td>Vulnerabilidad de seguridad</td><td>Equipo 3 (Seguridad)</td><td>Fase 4 (Seguridad)</td></tr>
+          <tr><td>Bug de implementación</td><td>Equipo 4 (Develop)</td><td>Fase 5 (Develop)</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-title" style="font-size:1rem;margin-top:1.5rem">🗂 Estado del pipeline</h2>
+      <p class="section-subtitle">Se registra en <code>.claude/logs/pipeline-state.json</code>. Ningún código se mergea ni deploya sin que este archivo refleje <code>status: GO</code>.</p>
+      <pre>
+{
+  "version": 2,
+  "features": [
+    {
+      "id": "feature-slug",
+      "name": "Feature display name",
+      "currentPhase": 7,
+      "currentTeam": "Equipo 6: Producción",
+      "status": "GO",
+      "audits": [
+        {"phase": 1, "verdict": "APROBADO"},
+        {"phase": 2, "verdict": "APROBADO"},
+        {"phase": 3, "verdict": "APROBADO"},
+        {"phase": 4, "verdict": "APROBADO"},
+        {"phase": 5, "verdict": "APROBADO"},
+        {"phase": 6, "verdict": "APROBADO"},
+        {"phase": 7, "verdict": "GO"}
+      ]
+    }
+  ]
+}</pre>
+    </section>
+
+    <!-- ═══════════════════════ HERMES ════════════════════════════════ -->
+    <section class="page" id="hermes">
+      <h2 class="section-title">🔮 Hermes Agent — Los 4 Niveles</h2>
+      <p class="section-subtitle">Metodología de madurez progresiva para configurar equipos de agentes. Por <strong>@shannholmberg</strong>.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../.claude/skills/skill-hermes-levels/SKILL.md" target="_blank" rel="noopener noreferrer">skill-hermes-levels</a>
+        <a class="resource-link" href="../../src/cli/commands/hermes.ts" target="_blank" rel="noopener noreferrer">src/cli/commands/hermes.ts</a>
+        <a class="resource-link" href="../../src/cli/claudio.ts" target="_blank" rel="noopener noreferrer">src/cli/claudio.ts</a>
+        <a class="resource-link" href="../../bin/claudio.cjs" target="_blank" rel="noopener noreferrer">bin/claudio.cjs</a>
+      </div>
+
+      <blockquote style="border-left:3px solid var(--purple);padding:.75rem 1rem;background:rgba(188,140,255,.05);border-radius:0 8px 8px 0;margin-bottom:1.5rem;font-style:italic;color:var(--muted);">
+        "Take small steps. Do not automate slop. Fewer agents with better output beats MAXXING."
+      </blockquote>
+
+      <div class="levels-grid">
+        <!-- NIVEL 1 -->
+        <div class="level-card l1">
+          <div class="level-num">Nivel 1</div>
+          <div class="level-title">Main Agent — Prototype Bench</div>
+          <div class="level-flow">You → Hermes Agent</div>
+          <ul class="level-cases">
+            <li>Prototipando un workflow por primera vez</li>
+            <li>Testing de ideas antes de invertir en agente dedicado</li>
+            <li>Asistente personal (inbox, voice memos, calendario)</li>
+            <li>Campaign briefs únicos</li>
+          </ul>
+          <div style="margin-top:.75rem;font-size:.78rem;color:var(--muted)">
+            <strong style="color:var(--blue)">Setup:</strong><br>
+            <code style="font-size:.72rem">claudio hermes install</code><br>
+            <code style="font-size:.72rem">claudio hermes init programmer</code>
+          </div>
+          <div style="margin-top:.5rem;font-size:.75rem;color:var(--blue)">
+            ↑ Subir al Nivel 2 cuando: el workflow se repite 3+ veces
+          </div>
+        </div>
+
+        <!-- NIVEL 2 -->
+        <div class="level-card l2">
+          <div class="level-num">Nivel 2</div>
+          <div class="level-title">Agentes Especializados — Un Rol Cada Uno</div>
+          <div class="level-flow">You → hermes-seo<br>You → hermes-cmo<br>You → hermes-outbound<br>You → hermes-design / hermes-ops</div>
+          <ul class="level-cases">
+            <li>Workflow repetible con pasos definidos</li>
+            <li>Scope sin solapamiento entre agentes</li>
+            <li>Credenciales + memoria independiente por agente</li>
+          </ul>
+          <div style="margin-top:.75rem;font-size:.78rem;color:var(--muted)">
+            <strong style="color:var(--green)">Setup:</strong><br>
+            <code style="font-size:.72rem">mkdir -p ~/.hermes/agents/hermes-seo</code><br>
+            <code style="font-size:.72rem">claudio hermes init researcher</code>
+          </div>
+          <div style="margin-top:.5rem;font-size:.75rem;color:var(--green)">
+            ↑ Subir al Nivel 3 cuando: la tarea es cross-functional
+          </div>
+        </div>
+
+        <!-- NIVEL 3 -->
+        <div class="level-card l3">
+          <div class="level-num">Nivel 3</div>
+          <div class="level-title">Equipo Orquestado — El Orquestador Enruta</div>
+          <div class="level-flow">You → Orchestrator<br>         ↓<br>  Specialist Agents</div>
+          <ul class="level-cases">
+            <li>Tarea toca más de un rol</li>
+            <li>El orquestador decide quién hace qué</li>
+            <li>Síntesis de resultados de múltiples agentes</li>
+          </ul>
+          <div style="margin-top:.75rem;font-size:.78rem;color:var(--muted)">
+            <strong style="color:var(--amber)">SOUL del orquestador:</strong><br>
+            Scope de cada agente + protocolo de routing + regla de síntesis
+          </div>
+          <div style="margin-top:.5rem;font-size:.75rem;color:var(--amber)">
+            ↑ Subir al Nivel 4 cuando: output consistente, no necesitas estar en el loop
+          </div>
+        </div>
+
+        <!-- NIVEL 4 -->
+        <div class="level-card l4">
+          <div class="level-num">Nivel 4</div>
+          <div class="level-title">Equipo Automatizado — Cron + Eventos</div>
+          <div class="level-flow">Cron / Events<br>      ↓<br>Orchestrator → Agent Team<br>      ↓<br>Reports (archivados)</div>
+          <ul class="level-cases">
+            <li>Workflow probado en Nivel 2 y Nivel 3 primero</li>
+            <li>Reportes semanales de SEO, audits nocturnos</li>
+            <li>Event-driven: lead qualification, inbox triage</li>
+            <li>Usuario notificado solo cuando necesita criterio</li>
+          </ul>
+          <div style="margin-top:.75rem;font-size:.78rem;color:var(--muted)">
+            <strong style="color:var(--purple)">Regla clave:</strong> No se automatiza slop. El output debe ser consistentemente bueno antes de automatizar.
+          </div>
+        </div>
+      </div>
+
+      <!-- DIAGNOSIS TREE -->
+      <h2 class="section-title" style="font-size:1rem">🔍 Árbol de diagnóstico — ¿qué nivel necesito?</h2>
+      <pre style="font-size:.75rem">
+1. ¿Ya ejecuté este workflow antes?
+   NO  → Nivel 1 (prototipa primero)
+   SÍ  → continuar ↓
+
+2. ¿El workflow toca más de un rol?
+   NO  → Nivel 2 (agente especializado)
+   SÍ  → continuar ↓
+
+3. ¿Quiero estar en el loop para cada ejecución?
+   SÍ  → Nivel 3 (orquestado, tú supervisas)
+   NO  → continuar ↓
+
+4. ¿El output del workflow es consistentemente bueno?
+   NO  → volver al nivel anterior y mejorar primero
+   SÍ  → Nivel 4 (automatizar)</pre>
+
+      <!-- COMMANDS TABLE -->
+      <h2 class="section-title" style="font-size:1rem;margin-top:1.5rem">⚡ Comandos CLI de Hermes</h2>
+      <table>
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>claudio hermes install</code></td><td>Instala Hermes en <code>~/.hermes/</code> por primera vez</td></tr>
+          <tr><td><code>claudio hermes init [perfil]</code></td><td>Inicializa SOUL.md con el perfil seleccionado (<code>programmer</code> / <code>designer</code> / <code>researcher</code> / <code>custom</code>)</td></tr>
+          <tr><td><code>claudio hermes optimize [ruta]</code></td><td>Sincroniza vault Obsidian → MEMORY.md del agente</td></tr>
+          <tr><td><code>claudio hermes status</code></td><td>Muestra estado actual: SOUL.md, MEMORY.md, skills instalados</td></tr>
+          <tr><td><code>claudio hermes gepa</code></td><td>Instrucciones para auto-evolución del agente (GEPA protocol)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════════════ RULES ═════════════════════════════════ -->
+    <section class="page" id="rules">
+      <h2 class="section-title">📏 Las 5 Reglas del Proyecto</h2>
+      <p class="section-subtitle">Constraints no negociables definidos en <code>.claude/rules/</code>. Aplicadas a cada agente en cada tarea.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../.claude/rules/security.md" target="_blank" rel="noopener noreferrer">security.md</a>
+        <a class="resource-link" href="../../.claude/rules/orchestration.md" target="_blank" rel="noopener noreferrer">orchestration.md</a>
+        <a class="resource-link" href="../../.claude/rules/domain.md" target="_blank" rel="noopener noreferrer">domain.md</a>
+        <a class="resource-link" href="../../.claude/rules/frontend.md" target="_blank" rel="noopener noreferrer">frontend.md</a>
+        <a class="resource-link" href="../../.claude/rules/html-first.md" target="_blank" rel="noopener noreferrer">html-first.md</a>
+      </div>
+
+      <div class="rule-card">
+        <h3>🔒 security.md — Seguridad y OWASP</h3>
+        <p>Datos sensibles: nunca en localStorage, nunca en logs de consola, nunca en client-side env vars. Todas las queries deben usar prepared statements. Sin <code>dangerouslySetInnerHTML</code> sin DOMPurify. API keys y tokens: solo server-side. Los hooks bloquean automáticamente las violaciones críticas.</p>
+      </div>
+
+      <div class="rule-card" style="border-left-color:var(--orange)">
+        <h3>🔄 orchestration.md — Pipeline de 7 fases</h3>
+        <p>Todo feature, bugfix o refactor relevante pasa por las 7 fases obligatorias. Ninguna fase se saltea. Si un equipo devuelve BLOQUEADO, el pipeline se detiene y se corrige antes de avanzar. El estado del pipeline se registra en <code>pipeline-state.json</code>.</p>
+      </div>
+
+      <div class="rule-card" style="border-left-color:var(--green)">
+        <h3>🏢 domain.md — Terminología de dominio</h3>
+        <p>Define el vocabulario canónico del negocio. Solo se usan los términos del glosario en labels de UI, nombres de variables, comentarios y documentación. Los invariantes de negocio definidos aquí se convierten en tests obligatorios.</p>
+      </div>
+
+      <div class="rule-card" style="border-left-color:var(--purple)">
+        <h3>🎨 frontend.md — Convenciones de frontend</h3>
+        <p>Design tokens CSS (nunca hardcodear valores), <code>cn()</code> para clases condicionales, componentes en directorios estándar, no <code>any</code>, iconos solo de <code>lucide-react</code>, <code>useMemo</code>/<code>useCallback</code> para objetos en render, keys de lista siempre con ID único.</p>
+      </div>
+
+      <div class="rule-card" style="border-left-color:var(--orange)">
+        <h3>📄 html-first.md — HTML sobre Markdown para outputs de agentes</h3>
+        <p>Todo artefacto que un humano va a <em>leer</em> (reportes, specs, auditorías, diagramas, dashboards) se genera como HTML autocontenido, no Markdown. El HTML debe ser: fully self-contained (sin CDN externo), dark mode, con status badge en el header, y footer con timestamp. Guardar en <code>docs/</code>.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ STRUCTURE ═════════════════════════════ -->
+    <section class="page" id="structure">
+      <h2 class="section-title">🗂 Estructura del Proyecto</h2>
+      <p class="section-subtitle">Árbol completo de carpetas con el propósito de cada directorio y archivo clave.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../package.json" target="_blank" rel="noopener noreferrer">package.json</a>
+        <a class="resource-link" href="../../src/index.ts" target="_blank" rel="noopener noreferrer">src/index.ts</a>
+        <a class="resource-link" href="../../.claude/CLAUDE.md" target="_blank" rel="noopener noreferrer">.claude/CLAUDE.md</a>
+        <a class="resource-link" href="../../README.md" target="_blank" rel="noopener noreferrer">README.md</a>
+        <a class="resource-link" href="../flows/project-architecture-map-2026-05-18.html" target="_blank" rel="noopener noreferrer">Mapa de relaciones</a>
+      </div>
+
+      <div class="tree-wrap">
+        <div class="tree">
+<span class="dir">agent-manager-template/</span>
+├── <span class="file">package.json</span>          <span class="comment">← scripts: dev, build, test, lint, format</span>
+├── <span class="file">tsconfig.json</span>         <span class="comment">← TypeScript 5.x, ESM, path aliases (@/)</span>
+├── <span class="file">vitest.config.ts</span>      <span class="comment">← globals: true, coverage v8, umbral 80%</span>
+├── <span class="file">eslint.config.js</span>      <span class="comment">← ESLint + Prettier</span>
+├── <span class="file">vercel.json</span>           <span class="comment">← config de deploy a Vercel</span>
+│
+├── <span class="dir">bin/</span>
+│   └── <span class="file">claudio.cjs</span>       <span class="comment">← entry point del CLI (CJS wrapper → tsx)</span>
+│
+├── <span class="dir">src/</span>
+│   ├── <span class="file">index.ts</span>          <span class="comment">← punto de entrada del servidor Fastify</span>
+│   ├── <span class="dir">agents/</span>           <span class="comment">← definición de agentes AI (Anthropic/OpenAI SDK)</span>
+│   ├── <span class="dir">cli/</span>
+│   │   ├── <span class="file">claudio.ts</span>    <span class="comment">← router del CLI: evoluciona | hermes</span>
+│   │   └── <span class="dir">commands/</span>
+│   │       ├── <span class="file">evoluciona.ts</span> <span class="comment">← wizard interactivo de setup</span>
+│   │       └── <span class="file">hermes.ts</span>     <span class="comment">← wizard de Hermes: install/init/optimize/status/gepa</span>
+│   ├── <span class="dir">config/</span>
+│   │   └── <span class="file">index.ts</span>      <span class="comment">← configuración de la app (env vars)</span>
+│   ├── <span class="dir">middleware/</span>
+│   │   └── <span class="file">error-handler.ts</span> <span class="comment">← manejo de errores sin exponer stack traces</span>
+│   ├── <span class="dir">routes/</span>
+│   │   ├── <span class="file">agent-routes.ts</span>  <span class="comment">← endpoints del agente AI</span>
+│   │   └── <span class="file">health-routes.ts</span> <span class="comment">← /health y /ready</span>
+│   ├── <span class="dir">services/</span>
+│   │   └── <span class="file">agent-service.ts</span> <span class="comment">← lógica de negocio de los agentes</span>
+│   ├── <span class="dir">tools/</span>
+│   │   ├── <span class="file">calculator.ts</span>  <span class="comment">← tool: operaciones matemáticas</span>
+│   │   ├── <span class="file">datetime.ts</span>    <span class="comment">← tool: fecha y hora actual</span>
+│   │   └── <span class="file">index.ts</span>       <span class="comment">← barrel: exporta todos los tools</span>
+│   ├── <span class="dir">types/</span>
+│   │   └── <span class="file">index.ts</span>       <span class="comment">← tipos TypeScript compartidos</span>
+│   └── <span class="dir">utils/</span>
+│       └── <span class="file">logger.ts</span>      <span class="comment">← logging estructurado JSON (no console.log)</span>
+│
+├── <span class="dir">tests/</span>
+│   ├── <span class="dir">unit/</span>
+│   │   ├── <span class="dir">cli/commands/</span>  <span class="comment">← hermes.test.ts (16 tests)</span>
+│   │   ├── <span class="dir">cli/utils/</span>     <span class="comment">← installer.test.ts (25) + prompts.test.ts (27)</span>
+│   │   ├── <span class="dir">tools/</span>         <span class="comment">← calculator.test.ts (7) + datetime.test.ts (3)</span>
+│   │   └── <span class="dir">services/</span>      <span class="comment">← agent-service.test.ts (2)</span>
+│   ├── <span class="dir">integration/</span>
+│   │   ├── <span class="file">cli.test.ts</span>    <span class="comment">← 20 tests de integración del CLI</span>
+│   │   └── <span class="file">health.test.ts</span> <span class="comment">← 12 tests de endpoints /health</span>
+│   └── <span class="dir">e2e/</span>             <span class="comment">← Playwright (estructura lista)</span>
+│
+├── <span class="dir">.claude/</span>           <span class="comment">← FUENTE DE VERDAD — toda la config vive aquí</span>
+│   ├── <span class="file">CLAUDE.md</span>         <span class="comment">← 12 reglas del proyecto (cargado automáticamente)</span>
+│   ├── <span class="file">settings.json</span>     <span class="comment">← permisos, hooks, MCPs, env vars</span>
+│   ├── <span class="dir">agents/</span>           <span class="comment">← 7 agentes especializados</span>
+│   ├── <span class="dir">commands/</span>         <span class="comment">← 12 comandos slash</span>
+│   ├── <span class="dir">hooks/</span>            <span class="comment">← 11 hooks (PreToolUse + PostToolUse + PreCompact + Notification)</span>
+│   ├── <span class="dir">rules/</span>            <span class="comment">← 5 reglas (security, orchestration, domain, frontend, html-first)</span>
+│   ├── <span class="dir">skills/</span>           <span class="comment">← 10 skills especializados</span>
+│   └── <span class="dir">logs/</span>
+│       ├── <span class="file">pipeline-state.json</span>  <span class="comment">← estado de features en el pipeline</span>
+│       ├── <span class="dir">audits/features/</span>     <span class="comment">← reportes por fase</span>
+│       └── <span class="dir">checkpoints/</span>         <span class="comment">← checkpoints de sesión</span>
+│
+├── <span class="dir">obsidian/</span>          <span class="comment">← vault de Obsidian (memoria extendida)</span>
+│   ├── <span class="dir">01-Agentes/</span>
+│   ├── <span class="dir">02-Estandares/</span>
+│   ├── <span class="dir">03-Contexto/</span>
+│   ├── <span class="dir">04-Analisis/</span>
+│   ├── <span class="dir">05-Testing/</span>
+│   ├── <span class="dir">06-Deployments/</span>
+│   └── <span class="dir">Templates/</span>
+│
+└── <span class="dir">docs/</span>
+    ├── <span class="dir">flows/</span>            <span class="comment">← diagramas de flujo HTML por módulo</span>
+    ├── <span class="dir">specs/</span>            <span class="comment">← specs de feature, decisiones de arquitectura (este archivo)</span>
+    ├── <span class="dir">audits/</span>           <span class="comment">← reportes de fases del pipeline</span>
+    └── <span class="dir">reviews/</span>          <span class="comment">← reportes de code review</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ TESTING ═══════════════════════════════ -->
+    <section class="page" id="testing">
+      <h2 class="section-title">🧪 Superficie de Testing</h2>
+      <p class="section-subtitle">Qué se prueba, cómo se ejecuta, dónde vive cada capa de test y qué policy de cobertura protege el proyecto.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../vitest.config.ts" target="_blank" rel="noopener noreferrer">vitest.config.ts</a>
+        <a class="resource-link" href="../../tests/integration/cli.test.ts" target="_blank" rel="noopener noreferrer">cli.test.ts</a>
+        <a class="resource-link" href="../../tests/integration/health.test.ts" target="_blank" rel="noopener noreferrer">health.test.ts</a>
+        <a class="resource-link" href="../../tests/unit/cli/commands/hermes.test.ts" target="_blank" rel="noopener noreferrer">hermes.test.ts</a>
+        <a class="resource-link" href="../../tests/unit/tools/calculator.test.ts" target="_blank" rel="noopener noreferrer">calculator.test.ts</a>
+        <a class="resource-link" href="../../tests/unit/services/agent-service.test.ts" target="_blank" rel="noopener noreferrer">agent-service.test.ts</a>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Policy</span><span class="badge badge-amber">Coverage</span></div>
+          <div class="card-desc">
+            El proyecto usa <strong>Vitest</strong> con environment <strong>node</strong>, cobertura <strong>v8</strong> y un umbral objetivo de <strong>80%</strong> para lines, branches, functions y statements.
+          </div>
+          <div class="card-tags"><span class="tag">Vitest</span><span class="tag">v8</span><span class="tag">80%</span><span class="tag">node</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Unit</span><span class="badge badge-green">Core</span></div>
+          <div class="card-desc">
+            Cubre el núcleo de la lógica: comandos del CLI, tools utilitarios y servicios. Es la primera barrera frente a regresiones locales y comportamiento esperado de helpers.
+          </div>
+          <div class="card-tags"><span class="tag">cli</span><span class="tag">tools</span><span class="tag">services</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Integration</span><span class="badge badge-blue">API</span></div>
+          <div class="card-desc">
+            Verifica integración real entre entrypoints: router del CLI y endpoints health del servidor Fastify, garantizando contratos externos y wiring correcto.
+          </div>
+          <div class="card-tags"><span class="tag">Fastify</span><span class="tag">CLI</span><span class="tag">HTTP</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">E2E</span><span class="badge badge-purple">Ready</span></div>
+          <div class="card-desc">
+            La carpeta <strong>tests/e2e</strong> ya existe como scaffold para Playwright. La intención es expandirla cuando haya flujos visuales o browser-based que validar.
+          </div>
+          <div class="card-tags"><span class="tag">Playwright</span><span class="tag">scaffold</span><span class="tag">browser</span></div>
+        </div>
+      </div>
+
+      <table>
+        <thead><tr><th>Script</th><th>Alcance</th><th>Uso recomendado</th></tr></thead>
+        <tbody>
+          <tr><td><code>pnpm test</code></td><td>Suite completa</td><td>Validación estándar antes de cerrar una tarea o intentar un push</td></tr>
+          <tr><td><code>pnpm run test:unit</code></td><td>Solo unit tests</td><td>Cambios locales en lógica, helpers, CLI o servicios</td></tr>
+          <tr><td><code>pnpm run test:int</code></td><td>Solo integración</td><td>Wiring de Fastify, health checks y rutas críticas</td></tr>
+          <tr><td><code>pnpm run test:e2e</code></td><td>Scaffold e2e</td><td>Activarlo cuando exista una superficie browser que merezca smoke real</td></tr>
+          <tr><td><code>pnpm run test:coverage</code></td><td>Suite + coverage</td><td>Revisar brechas antes de endurecer gates o abrir release</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <thead><tr><th>Zona</th><th>Archivos clave</th><th>Qué protegen</th></tr></thead>
+        <tbody>
+          <tr><td>CLI</td><td><code>tests/unit/cli/commands/hermes.test.ts</code>, <code>tests/integration/cli.test.ts</code></td><td>Subcomandos, prompts, argumentos y flujo completo de instalación/configuración</td></tr>
+          <tr><td>Tools</td><td><code>tests/unit/tools/calculator.test.ts</code>, <code>tests/unit/tools/datetime.test.ts</code></td><td>Comportamiento determinista de utilities expuestas a agentes</td></tr>
+          <tr><td>Servicios</td><td><code>tests/unit/services/agent-service.test.ts</code></td><td>Lógica de negocio desacoplada de HTTP</td></tr>
+          <tr><td>Servidor</td><td><code>tests/integration/health.test.ts</code></td><td>Health endpoints, arranque básico y contrato externo</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════════════ DOCS & KNOWLEDGE ═════════════════════ -->
+    <section class="page" id="docs-knowledge">
+      <h2 class="section-title">📚 Documentación y Memoria Operativa</h2>
+      <p class="section-subtitle">La capa documental del template: guías humanas, contexto operativo, artefactos HTML y el scaffold de memoria extendida para proyectos que adopten el setup.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../README.md" target="_blank" rel="noopener noreferrer">README.md</a>
+        <a class="resource-link" href="../../docs/decisions.md" target="_blank" rel="noopener noreferrer">docs/decisions.md</a>
+        <a class="resource-link" href="../../docs/roadmap.md" target="_blank" rel="noopener noreferrer">docs/roadmap.md</a>
+        <a class="resource-link" href="../../docs/tasks.md" target="_blank" rel="noopener noreferrer">docs/tasks.md</a>
+        <a class="resource-link" href="../../.claude/context.md" target="_blank" rel="noopener noreferrer">.claude/context.md</a>
+        <a class="resource-link" href="../../.claude/architecture.md" target="_blank" rel="noopener noreferrer">.claude/architecture.md</a>
+        <a class="resource-link" href="../../.claude/memory.md" target="_blank" rel="noopener noreferrer">.claude/memory.md</a>
+        <a class="resource-link" href="../../.claude/troubleshooting.md" target="_blank" rel="noopener noreferrer">.claude/troubleshooting.md</a>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">README</span><span class="badge badge-blue">Entrada</span></div>
+          <div class="card-desc">
+            Punto de entrada humano. Explica qué es el template, cómo empezar, los 7 agentes, los 12 comandos, los 11 hooks, los 10 skills y los 4 niveles de Hermes.
+          </div>
+          <div class="card-tags"><span class="tag">onboarding</span><span class="tag">CLI</span><span class="tag">Hermes</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">docs/</span><span class="badge badge-green">Planificación</span></div>
+          <div class="card-desc">
+            <strong>decisions.md</strong>, <strong>roadmap.md</strong> y <strong>tasks.md</strong> concentran decisiones, dirección del proyecto y trabajo pendiente a nivel humano.
+          </div>
+          <div class="card-tags"><span class="tag">roadmap</span><span class="tag">decisiones</span><span class="tag">backlog</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">.claude/ docs</span><span class="badge badge-purple">Operación</span></div>
+          <div class="card-desc">
+            <strong>context.md</strong>, <strong>architecture.md</strong>, <strong>memory.md</strong> y <strong>troubleshooting.md</strong> sirven como contexto operativo interno para agentes y mantenedores.
+          </div>
+          <div class="card-tags"><span class="tag">contexto</span><span class="tag">arquitectura</span><span class="tag">troubleshooting</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Vault Obsidian</span><span class="badge badge-pink">Extensión</span></div>
+          <div class="card-desc">
+            El vault en <strong>obsidian/</strong> es un scaffold vacío en este template. Se usa cuando el proyecto destino quiere memoria extendida sincronizada con <code>claudio hermes optimize</code>.
+          </div>
+          <div class="card-tags"><span class="tag">obsidian</span><span class="tag">memory</span><span class="tag">hermes optimize</span></div>
+        </div>
+      </div>
+
+      <table>
+        <thead><tr><th>Superficie</th><th>Ubicación</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td>Guía principal</td><td><code>README.md</code></td><td>Onboarding, uso diario y explicación del template para humanos</td></tr>
+          <tr><td>Planificación</td><td><code>docs/*.md</code></td><td>Roadmap, decisiones y tareas del proyecto</td></tr>
+          <tr><td>Contexto interno</td><td><code>.claude/*.md</code></td><td>Arquitectura, troubleshooting, memoria operativa y contexto corto</td></tr>
+          <tr><td>Artefactos HTML</td><td><code>docs/specs</code>, <code>docs/flows</code>, <code>docs/audits</code>, <code>docs/reviews</code></td><td>Outputs legibles de agentes bajo la regla html-first</td></tr>
+          <tr><td>Memoria extendida</td><td><code>obsidian/</code></td><td>Base de conocimiento conectable a Hermes en proyectos reales</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══════════════════════ STACK ═════════════════════════════════ -->
+    <section class="page" id="stack">
+      <h2 class="section-title">⚙️ Stack Tecnológico y CLI</h2>
+      <p class="section-subtitle">Runtime, lenguaje, frameworks, testing y deployment.</p>
+      <div class="resource-links">
+        <a class="resource-link" href="../../package.json" target="_blank" rel="noopener noreferrer">package.json</a>
+        <a class="resource-link" href="../../tsconfig.json" target="_blank" rel="noopener noreferrer">tsconfig.json</a>
+        <a class="resource-link" href="../../vitest.config.ts" target="_blank" rel="noopener noreferrer">vitest.config.ts</a>
+        <a class="resource-link" href="../../vercel.json" target="_blank" rel="noopener noreferrer">vercel.json</a>
+        <a class="resource-link" href="../../src/cli/commands/evoluciona.ts" target="_blank" rel="noopener noreferrer">src/cli/commands/evoluciona.ts</a>
+        <a class="resource-link" href="../../src/cli/commands/hermes.ts" target="_blank" rel="noopener noreferrer">src/cli/commands/hermes.ts</a>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Runtime y Lenguaje</span><span class="badge badge-blue">Core</span></div>
+          <div class="card-desc">
+            <strong>Node.js 20+</strong> — ESM nativo (<code>"type": "module"</code>)<br>
+            <strong>TypeScript 5.x</strong> — sin <code>any</code>, path aliases con <code>@/</code><br>
+            <strong>tsx ^4.19.0</strong> — resuelve <code>.ts</code> en runtime sin compilar<br>
+            <strong>pnpm</strong> — package manager recomendado
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Framework del servidor</span><span class="badge badge-green">API</span></div>
+          <div class="card-desc">
+            <strong>Fastify</strong> — API ligera y rápida<br>
+            <strong>Zod</strong> — validación de schemas en todas las capas<br>
+            <strong>Supertest</strong> — tests de integración HTTP<br>
+            Extensible a Express, Hono, o cualquier framework
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">AI SDK</span><span class="badge badge-purple">Agentes</span></div>
+          <div class="card-desc">
+            <strong>@anthropic-ai/sdk</strong> — Anthropic Claude<br>
+            <strong>openai</strong> — OpenAI SDK<br>
+            Tool use nativo, streaming, function calling<br>
+            GEPA: <code>NousResearch/hermes-agent-self-evolution</code>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Testing</span><span class="badge badge-amber">QA</span></div>
+          <div class="card-desc">
+            <strong>Vitest</strong> — unit + integration (<code>globals: true</code>, coverage v8)<br>
+            <strong>Supertest</strong> — integration tests HTTP<br>
+            <strong>Playwright</strong> — e2e (estructura lista)<br>
+            Umbral: 80% coverage (lines/branches/functions/statements)
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Calidad de código</span><span class="badge badge-cyan">Lint</span></div>
+          <div class="card-desc">
+            <strong>ESLint</strong> — linting de TypeScript<br>
+            <strong>Prettier</strong> — formateo automático<br>
+            Hooks: lint-on-edit (PostToolUse) + test-on-change (PostToolUse)
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Deploy</span><span class="badge badge-orange">Infra</span></div>
+          <div class="card-desc">
+            <strong>Vercel</strong> — deploy serverless (configurado en <code>vercel.json</code>)<br>
+            Build: <code>npm run build</code> → <code>dist/</code><br>
+            Fase 7 del pipeline verifica el deploy antes de GO
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-title" style="font-size:1rem;margin-top:.5rem">⚡ CLI <code>claudio</code> — Referencia</h2>
+      <table>
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>pnpm install</code></td><td>Instalar dependencias</td></tr>
+          <tr><td><code>pnpm run dev</code></td><td>Dev server con hot-reload (tsx watch)</td></tr>
+          <tr><td><code>pnpm run build</code></td><td>Compilar TypeScript → <code>dist/</code></td></tr>
+          <tr><td><code>pnpm run lint</code></td><td>Ejecutar ESLint</td></tr>
+          <tr><td><code>pnpm run lint:fix</code></td><td>ESLint con auto-fix</td></tr>
+          <tr><td><code>pnpm run format</code></td><td>Formatear con Prettier</td></tr>
+          <tr><td><code>pnpm test</code></td><td>Todos los tests (unit + integration)</td></tr>
+          <tr><td><code>pnpm run test:unit</code></td><td>Solo tests unitarios</td></tr>
+          <tr><td><code>pnpm run test:int</code></td><td>Solo tests de integración</td></tr>
+          <tr><td><code>pnpm run test:e2e</code></td><td>Solo tests e2e (Playwright)</td></tr>
+          <tr><td><code>pnpm run test:watch</code></td><td>Tests en modo watch</td></tr>
+          <tr><td><code>pnpm run claudio -- hermes install</code></td><td>Instalar Hermes Agent</td></tr>
+          <tr><td><code>pnpm run claudio -- hermes init programmer</code></td><td>Inicializar SOUL.md</td></tr>
+          <tr><td><code>pnpm run claudio -- hermes optimize ./proyecto</code></td><td>Sincronizar Obsidian → MEMORY.md</td></tr>
+          <tr><td><code>pnpm run claudio -- hermes status</code></td><td>Estado del setup de Hermes</td></tr>
+          <tr><td><code>pnpm run claudio -- evoluciona</code></td><td>Wizard interactivo para instalar en otro proyecto</td></tr>
+        </tbody>
+      </table>
+
+      <!-- FEEDBACK -->
+      <div class="feedback-wrap">
+        <h3>Enviar corrección al agente</h3>
+        <textarea id="feedback" placeholder="Describe qué cambiar, qué falta, o qué está mal en este índice..."></textarea>
+        <button class="btn" onclick="copyFeedback()">Copiar como prompt</button>
+      </div>
+    </section>
+
+  </div><!-- /.content -->
+</main>
+
+<script>
+  // ── Navigation ──────────────────────────────────────
+  function show(section) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
+    document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+    const page = document.getElementById(section);
+    if (page) page.classList.add('visible');
+    const link = document.querySelector(`.nav-link[data-section="${section}"]`);
+    if (link) link.classList.add('active');
+    globalThis.scrollTo(0, 0);
+    // Update URL hash without jump
+    history.replaceState(null, '', `#${section}`);
+  }
+
+  // Load section from hash on page open
+  globalThis.addEventListener('DOMContentLoaded', () => {
+    const hash = location.hash.replace('#', '');
+    if (hash) show(hash);
+  });
+
+  // ── Search ───────────────────────────────────────────
+  function filterCards(query) {
+    if (!query.trim()) {
+      document.querySelectorAll('.card, details').forEach(el => el.style.display = '');
+      return;
+    }
+    const q = query.toLowerCase();
+    document.querySelectorAll('.card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(q) ? '' : 'none';
+    });
+    document.querySelectorAll('details').forEach(detail => {
+      const text = detail.textContent.toLowerCase();
+      detail.style.display = text.includes(q) ? '' : 'none';
+      if (text.includes(q)) detail.open = true;
+    });
+    // Show all pages when searching
+    if (query.trim()) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('visible'));
+    }
+  }
+
+  // Clear filter on empty
+  document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.target.value = '';
+      filterCards('');
+      const hash = location.hash.replace('#', '') || 'overview';
+      show(hash);
+    }
+  });
+
+  // ── Copy feedback ─────────────────────────────────────
+  function copyFeedback() {
+    const text = document.getElementById('feedback').value.trim();
+    if (!text) return;
+    const prompt = `Contexto: ${document.title}\n\nFeedback sobre el índice del proyecto:\n${text}`;
+    navigator.clipboard.writeText(prompt).then(() => {
+      const btn = document.querySelector('.btn');
+      btn.textContent = '✓ Copiado';
+      setTimeout(() => btn.textContent = 'Copiar como prompt', 2000);
+    });
+  }
+</script>
+
+</body>
+</html>

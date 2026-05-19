@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa de Relaciones — Agent Manager Template — 2026-05-18</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #1f2630;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --green: #3fb950;
+      --amber: #d29922;
+      --red: #f85149;
+      --blue: #58a6ff;
+      --purple: #bc8cff;
+      --cyan: #39d0d4;
+      --orange: #f0883e;
+      --shadow: 0 16px 48px rgba(0, 0, 0, .24);
+      --max: 1320px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(88,166,255,.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(188,140,255,.08), transparent 24%),
+        linear-gradient(180deg, #0d1117 0%, #0a0f14 100%);
+      color: var(--text);
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+    }
+
+    .shell {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    .hero {
+      border: 1px solid rgba(88,166,255,.18);
+      background: linear-gradient(135deg, rgba(22,27,34,.96), rgba(17,23,31,.94));
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(88,166,255,.04), transparent);
+      pointer-events: none;
+    }
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    h1 {
+      margin: 6px 0 10px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+    .lede {
+      max-width: 840px;
+      font-size: 15px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      border: 1px solid transparent;
+    }
+    .badge-blue { background: rgba(88,166,255,.14); color: var(--blue); border-color: rgba(88,166,255,.25); }
+    .badge-green { background: rgba(63,185,80,.14); color: var(--green); border-color: rgba(63,185,80,.25); }
+    .badge-amber { background: rgba(210,153,34,.14); color: var(--amber); border-color: rgba(210,153,34,.25); }
+    .badge-purple { background: rgba(188,140,255,.14); color: var(--purple); border-color: rgba(188,140,255,.25); }
+
+    .link-row, .jump-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .file-link, .jump-link, .tab-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(88,166,255,.22);
+      color: var(--blue);
+      text-decoration: none;
+      background: rgba(88,166,255,.08);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
+    }
+    .file-link:hover, .jump-link:hover, .tab-button:hover,
+    .file-link:focus-visible, .jump-link:focus-visible, .tab-button:focus-visible {
+      transform: translateY(-1px);
+      background: rgba(88,166,255,.16);
+      border-color: rgba(88,166,255,.35);
+      color: var(--text);
+      outline: none;
+    }
+    .file-link::after { content: '↗'; font-size: 12px; }
+    .tab-button.active {
+      background: rgba(63,185,80,.14);
+      color: var(--green);
+      border-color: rgba(63,185,80,.3);
+    }
+
+    section {
+      margin-top: 30px;
+      padding: 24px;
+      background: rgba(22,27,34,.88);
+      border: 1px solid rgba(48,54,61,.88);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    h2 {
+      margin: 0 0 6px;
+      font-size: 1.4rem;
+    }
+    .section-copy {
+      margin: 0 0 18px;
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 860px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .stat-card {
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(48,54,61,.8);
+      background: linear-gradient(180deg, rgba(31,38,48,.9), rgba(22,27,34,.9));
+    }
+    .stat-card strong {
+      display: block;
+      font-size: 1.9rem;
+      line-height: 1;
+    }
+    .stat-card span {
+      display: block;
+      margin-top: 6px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-muted);
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(190px, 1fr));
+      gap: 16px;
+      align-items: start;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .lane {
+      min-height: 100%;
+      padding: 16px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(13,17,23,.6), rgba(22,27,34,.94));
+      border: 1px solid rgba(48,54,61,.85);
+      position: relative;
+    }
+    .lane + .lane::before {
+      content: '→';
+      position: absolute;
+      left: -14px;
+      top: 18px;
+      color: var(--text-muted);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .lane-label {
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .node {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(31,38,48,.72);
+      border: 1px solid rgba(88,166,255,.16);
+      margin-bottom: 12px;
+    }
+    .node:last-child { margin-bottom: 0; }
+    .node h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+    }
+    .node p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .node .inline-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .flow-panel {
+      display: none;
+      animation: fadeIn .18s ease;
+    }
+    .flow-panel.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .step {
+      position: relative;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(48,54,61,.85);
+      background: linear-gradient(180deg, rgba(31,38,48,.84), rgba(22,27,34,.92));
+      min-height: 196px;
+    }
+    .step-number {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--text-muted);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .step h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .step p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .step .inline-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .matrix {
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid rgba(48,54,61,.85);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(48,54,61,.7);
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      background: rgba(31,38,48,.92);
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+    td strong { display: block; margin-bottom: 4px; }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .timeline-card {
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(48,54,61,.85);
+      background: linear-gradient(180deg, rgba(31,38,48,.84), rgba(22,27,34,.92));
+    }
+    .timeline-card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+    .timeline-card p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .timeline-card .inline-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .feedback {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(48,54,61,.85);
+      background: rgba(13,17,23,.55);
+    }
+    .feedback h3 { margin: 0 0 8px; }
+    .feedback p { margin: 0 0 12px; color: var(--text-muted); font-size: 13px; }
+    textarea {
+      width: 100%;
+      min-height: 96px;
+      border-radius: 12px;
+      background: rgba(13,17,23,.92);
+      border: 1px solid rgba(48,54,61,.9);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+      resize: vertical;
+    }
+    textarea:focus-visible {
+      outline: none;
+      border-color: rgba(88,166,255,.55);
+      box-shadow: 0 0 0 3px rgba(88,166,255,.16);
+    }
+
+    footer {
+      margin-top: 18px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1060px) {
+      .map-grid { grid-template-columns: repeat(5, minmax(240px, 1fr)); }
+    }
+    @media (max-width: 720px) {
+      .shell { padding: 18px 16px 48px; }
+      .hero, section { padding: 18px; }
+      .hero-top { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">docs/flows</div>
+          <h1>Mapa de relaciones del proyecto</h1>
+          <p class="lede">Vista arquitectónica e interactiva de cómo se conectan carpetas, hooks, runtime, pipeline y artefactos en Agent Manager Template. Esta versión está pensada para leer el sistema completo sin tener que ir archivo por archivo.</p>
+        </div>
+        <div class="badge badge-green">REFERENCE MAP</div>
+      </div>
+
+      <div class="jump-row">
+        <a class="jump-link" href="#system-map">Capas del sistema</a>
+        <a class="jump-link" href="#flows">Flujos principales</a>
+        <a class="jump-link" href="#matrix">Matriz de dependencias</a>
+        <a class="jump-link" href="#timeline">Timeline de hooks</a>
+      </div>
+
+      <div class="link-row">
+        <a class="file-link" href="../specs/project-index-2026-05-18.html" target="_blank" rel="noopener noreferrer">Abrir índice general</a>
+        <a class="file-link" href="../../README.md" target="_blank" rel="noopener noreferrer">README</a>
+        <a class="file-link" href="../../.claude/CLAUDE.md" target="_blank" rel="noopener noreferrer">CLAUDE.md</a>
+        <a class="file-link" href="../../.claude/rules/orchestration.md" target="_blank" rel="noopener noreferrer">orchestration.md</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card"><strong style="color: var(--purple);">7</strong><span>Agentes</span></div>
+        <div class="stat-card"><strong style="color: var(--cyan);">10</strong><span>Skills</span></div>
+        <div class="stat-card"><strong style="color: var(--green);">12</strong><span>Comandos slash</span></div>
+        <div class="stat-card"><strong style="color: var(--amber);">11</strong><span>Hooks</span></div>
+        <div class="stat-card"><strong style="color: var(--orange);">7</strong><span>Fases de pipeline</span></div>
+      </div>
+    </header>
+
+    <section id="system-map">
+      <h2>Capas del sistema</h2>
+      <p class="section-copy">La arquitectura se puede leer como una cadena: entrada humana → orquestación del setup Claude → runtime y código de negocio → guardrails automáticos → artefactos y trazabilidad.</p>
+
+      <div class="map-grid">
+        <div class="lane">
+          <div class="lane-label">Entrada</div>
+          <div class="node">
+            <h3>Usuario / conversación</h3>
+            <p>Dispara prompts, slash commands, requests de features, bugfixes y revisiones.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../README.md" target="_blank" rel="noopener noreferrer">README</a>
+            </div>
+          </div>
+          <div class="node">
+            <h3>CLI claudio</h3>
+            <p>Instala y orquesta el setup reutilizable del template sobre otros proyectos.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../bin/claudio.cjs" target="_blank" rel="noopener noreferrer">bin/claudio.cjs</a>
+              <a class="file-link" href="../../src/cli/claudio.ts" target="_blank" rel="noopener noreferrer">src/cli/claudio.ts</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-label">Orquestación</div>
+          <div class="node">
+            <h3>.claude/CLAUDE.md</h3>
+            <p>Fuente de verdad. Define reglas operativas, stack, pipeline y convenciones de trabajo.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/CLAUDE.md" target="_blank" rel="noopener noreferrer">CLAUDE.md</a>
+            </div>
+          </div>
+          <div class="node">
+            <h3>Agentes + skills + comandos</h3>
+            <p>Encapsulan roles, conocimiento reutilizable y workflows invocables desde Claude Code.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/agents/orchestrator.md" target="_blank" rel="noopener noreferrer">orchestrator.md</a>
+              <a class="file-link" href="../../.claude/skills/skill-html-artifacts/SKILL.md" target="_blank" rel="noopener noreferrer">skill-html-artifacts</a>
+              <a class="file-link" href="../../.claude/commands/flows.md" target="_blank" rel="noopener noreferrer">flows.md</a>
+            </div>
+          </div>
+          <div class="node">
+            <h3>Pipeline state</h3>
+            <p>Persistencia del estado de cada feature y sus gates de salida.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/logs/pipeline-state.json" target="_blank" rel="noopener noreferrer">pipeline-state.json</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-label">Runtime</div>
+          <div class="node">
+            <h3>Servidor Fastify</h3>
+            <p>Registra CORS, middleware de errores y endpoints de health y agent API.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../src/index.ts" target="_blank" rel="noopener noreferrer">src/index.ts</a>
+              <a class="file-link" href="../../src/routes/health-routes.ts" target="_blank" rel="noopener noreferrer">health-routes.ts</a>
+              <a class="file-link" href="../../src/routes/agent-routes.ts" target="_blank" rel="noopener noreferrer">agent-routes.ts</a>
+            </div>
+          </div>
+          <div class="node">
+            <h3>Servicios y tools</h3>
+            <p>La lógica de negocio y los tools se conectan a las rutas y quedan cubiertos por tests unitarios e integración.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../src/services/agent-service.ts" target="_blank" rel="noopener noreferrer">agent-service.ts</a>
+              <a class="file-link" href="../../src/tools/index.ts" target="_blank" rel="noopener noreferrer">tools/index.ts</a>
+              <a class="file-link" href="../../src/utils/logger.ts" target="_blank" rel="noopener noreferrer">logger.ts</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-label">Guardrails</div>
+          <div class="node">
+            <h3>PreToolUse</h3>
+            <p>Bloquea bash destructivo, secretos, pushes inseguros y saltos de fase.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/hooks/PreToolUse/01-validate-dangerous-bash.sh" target="_blank" rel="noopener noreferrer">dangerous-bash</a>
+              <a class="file-link" href="../../.claude/hooks/PreToolUse/03-write-security-scan.py" target="_blank" rel="noopener noreferrer">security-scan</a>
+            </div>
+          </div>
+          <div class="node">
+            <h3>PostToolUse</h3>
+            <p>Produce checkpoints, lint, tests y detecta documentación de flujos desactualizada.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/hooks/PostToolUse/01-auto-checkpoint.sh" target="_blank" rel="noopener noreferrer">auto-checkpoint</a>
+              <a class="file-link" href="../../.claude/hooks/PostToolUse/04-flow-stale-detector.py" target="_blank" rel="noopener noreferrer">flow-stale-detector</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-label">Artefactos</div>
+          <div class="node">
+            <h3>Documentación HTML</h3>
+            <p>Specs, flujos, auditorías y reviews viven en docs/ para lectura humana.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../specs/project-index-2026-05-18.html" target="_blank" rel="noopener noreferrer">project-index</a>
+              <a class="file-link" href="../../.claude/rules/html-first.md" target="_blank" rel="noopener noreferrer">html-first.md</a>
+            </div>
+          </div>
+          <div class="node">
+            <h3>Logs y checkpoints</h3>
+            <p>Persisten el estado de auditorías, handoffs y checkpoints de sesión.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/logs/README.md" target="_blank" rel="noopener noreferrer">logs/README.md</a>
+              <a class="file-link" href="../../.claude/logs/checkpoints/.gitkeep" target="_blank" rel="noopener noreferrer">checkpoints/.gitkeep</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="flows">
+      <h2>Flujos principales</h2>
+      <p class="section-copy">Cada pestaña resume un flujo importante del proyecto y apunta a los archivos que lo implementan o lo gobiernan.</p>
+
+      <div class="tabs" role="tablist" aria-label="Flujos del sistema">
+        <button class="tab-button active" type="button" data-flow="implementacion">Feature → pipeline</button>
+        <button class="tab-button" type="button" data-flow="cli">CLI → setup</button>
+        <button class="tab-button" type="button" data-flow="runtime">Dev server → API</button>
+        <button class="tab-button" type="button" data-flow="testing">Cambios → tests</button>
+        <button class="tab-button" type="button" data-flow="docs">Docs → memoria</button>
+        <button class="tab-button" type="button" data-flow="hooks">Edición → hooks</button>
+      </div>
+
+      <div class="flow-panel active" id="flow-implementacion">
+        <div class="steps">
+          <article class="step">
+            <div class="step-number">Paso 1</div>
+            <h3>Entrada de feature</h3>
+            <p>La feature se formula desde usuario, prompt o slash command y se crea su entrada en el pipeline.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/rules/orchestration.md" target="_blank" rel="noopener noreferrer">orchestration.md</a>
+              <a class="file-link" href="../../.claude/logs/pipeline-state.json" target="_blank" rel="noopener noreferrer">pipeline-state.json</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 2</div>
+            <h3>Diseño</h3>
+            <p>Domain Expert valida terminología y flujos; Architect define contratos, archivos y opciones de diseño.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/agents/domain-expert.md" target="_blank" rel="noopener noreferrer">domain-expert</a>
+              <a class="file-link" href="../../.claude/agents/architect.md" target="_blank" rel="noopener noreferrer">architect</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 3</div>
+            <h3>Seguridad antes de develop</h3>
+            <p>El feature no pasa a implementación sin auditoría de seguridad aprobada. Hallazgo crítico implica rebote.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/agents/security-auditor.md" target="_blank" rel="noopener noreferrer">security-auditor</a>
+              <a class="file-link" href="../../.claude/rules/security.md" target="_blank" rel="noopener noreferrer">security.md</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 4</div>
+            <h3>Implementación + QA + GO/NO-GO</h3>
+            <p>Reviewer protege convenciones, Tester intenta romper la feature, y Producción emite el veredicto final.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/agents/reviewer.md" target="_blank" rel="noopener noreferrer">reviewer</a>
+              <a class="file-link" href="../../.claude/agents/tester.md" target="_blank" rel="noopener noreferrer">tester</a>
+              <a class="file-link" href="../../.claude/agents/orchestrator.md" target="_blank" rel="noopener noreferrer">orchestrator</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="flow-panel" id="flow-cli">
+        <div class="steps">
+          <article class="step">
+            <div class="step-number">Paso 1</div>
+            <h3>Invocación del CLI</h3>
+            <p>El binario registrado en package.json resuelve al wrapper CJS y de ahí al router TypeScript del CLI.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../package.json" target="_blank" rel="noopener noreferrer">package.json</a>
+              <a class="file-link" href="../../bin/claudio.cjs" target="_blank" rel="noopener noreferrer">bin/claudio.cjs</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 2</div>
+            <h3>Router del CLI</h3>
+            <p>src/cli/claudio.ts decide si ejecutar evoluciona o hermes y enruta argumentos/subcomandos.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../src/cli/claudio.ts" target="_blank" rel="noopener noreferrer">src/cli/claudio.ts</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 3</div>
+            <h3>Setup reutilizable</h3>
+            <p>evoluciona instala el setup Claude; hermes instala, inicializa, optimiza o inspecciona el estado del agente Hermes.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../src/cli/commands/evoluciona.ts" target="_blank" rel="noopener noreferrer">evoluciona.ts</a>
+              <a class="file-link" href="../../src/cli/commands/hermes.ts" target="_blank" rel="noopener noreferrer">hermes.ts</a>
+              <a class="file-link" href="../../.claude/skills/skill-hermes-levels/SKILL.md" target="_blank" rel="noopener noreferrer">skill-hermes-levels</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 4</div>
+            <h3>Artifacts instalados</h3>
+            <p>El resultado es la carpeta .claude, hooks, commands, skills, reglas y opcionalmente integración con el vault de Obsidian.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/settings.json" target="_blank" rel="noopener noreferrer">settings.json</a>
+              <a class="file-link" href="../../src/cli/commands/hermes.ts" target="_blank" rel="noopener noreferrer">hermes.ts</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="flow-panel" id="flow-runtime">
+        <div class="steps">
+          <article class="step">
+            <div class="step-number">Paso 1</div>
+            <h3>Scripts de arranque</h3>
+            <p>package.json publica los scripts dev/build/test/claudio. En desarrollo, tsx watch arranca src/index.ts.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../package.json" target="_blank" rel="noopener noreferrer">package.json</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 2</div>
+            <h3>Boot de Fastify</h3>
+            <p>src/index.ts crea la app, registra CORS, aplica el error handler y monta las rutas con prefijo /api/v1.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../src/index.ts" target="_blank" rel="noopener noreferrer">src/index.ts</a>
+              <a class="file-link" href="../../src/middleware/error-handler.ts" target="_blank" rel="noopener noreferrer">error-handler.ts</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 3</div>
+            <h3>Rutas → servicios → tools</h3>
+            <p>Las rutas llaman servicios y tools; el logger centraliza trazas estructuradas y evita console.log en producción.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../src/routes/agent-routes.ts" target="_blank" rel="noopener noreferrer">agent-routes.ts</a>
+              <a class="file-link" href="../../src/services/agent-service.ts" target="_blank" rel="noopener noreferrer">agent-service.ts</a>
+              <a class="file-link" href="../../src/utils/logger.ts" target="_blank" rel="noopener noreferrer">logger.ts</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 4</div>
+            <h3>Verificación</h3>
+            <p>health tests, unit tests y coverage confirman que runtime y API siguen el contrato esperado.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../tests/integration/health.test.ts" target="_blank" rel="noopener noreferrer">health.test.ts</a>
+              <a class="file-link" href="../../tests/unit/services/agent-service.test.ts" target="_blank" rel="noopener noreferrer">agent-service.test.ts</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="flow-panel" id="flow-testing">
+        <div class="steps">
+          <article class="step">
+            <div class="step-number">Paso 1</div>
+            <h3>Cambio en código o CLI</h3>
+            <p>Una modificación en src/ o en el setup del CLI define qué capa de pruebas conviene ejecutar primero.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../src/index.ts" target="_blank" rel="noopener noreferrer">src/index.ts</a>
+              <a class="file-link" href="../../src/cli/commands/hermes.ts" target="_blank" rel="noopener noreferrer">hermes.ts</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 2</div>
+            <h3>Selección de suite</h3>
+            <p>Vitest separa unit, integration y coverage. El cambio dicta si alcanza un test focalizado o si conviene correr la suite completa.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../vitest.config.ts" target="_blank" rel="noopener noreferrer">vitest.config.ts</a>
+              <a class="file-link" href="../../package.json" target="_blank" rel="noopener noreferrer">package.json</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 3</div>
+            <h3>Protección por capa</h3>
+            <p>Los tests unitarios cubren comandos, tools y servicios; los de integración cubren wiring del CLI y endpoints health.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../tests/unit/cli/commands/hermes.test.ts" target="_blank" rel="noopener noreferrer">hermes.test.ts</a>
+              <a class="file-link" href="../../tests/unit/tools/calculator.test.ts" target="_blank" rel="noopener noreferrer">calculator.test.ts</a>
+              <a class="file-link" href="../../tests/integration/cli.test.ts" target="_blank" rel="noopener noreferrer">cli.test.ts</a>
+              <a class="file-link" href="../../tests/integration/health.test.ts" target="_blank" rel="noopener noreferrer">health.test.ts</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 4</div>
+            <h3>Gate operacional</h3>
+            <p>Los hooks y la fase QA endurecen el gate: si la evidencia no alcanza, el cambio no debería avanzar a merge o producción.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/hooks/PostToolUse/03-test-on-change.sh" target="_blank" rel="noopener noreferrer">test-on-change</a>
+              <a class="file-link" href="../../.claude/agents/tester.md" target="_blank" rel="noopener noreferrer">tester</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="flow-panel" id="flow-docs">
+        <div class="steps">
+          <article class="step">
+            <div class="step-number">Paso 1</div>
+            <h3>Fuente humana</h3>
+            <p>README y docs/*.md fijan narrativa, roadmap, decisiones y tareas para quienes mantienen el template.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../README.md" target="_blank" rel="noopener noreferrer">README.md</a>
+              <a class="file-link" href="../../docs/decisions.md" target="_blank" rel="noopener noreferrer">decisions.md</a>
+              <a class="file-link" href="../../docs/roadmap.md" target="_blank" rel="noopener noreferrer">roadmap.md</a>
+              <a class="file-link" href="../../docs/tasks.md" target="_blank" rel="noopener noreferrer">tasks.md</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 2</div>
+            <h3>Contexto operativo</h3>
+            <p>Los markdown de .claude complementan la operación diaria: contexto rápido, arquitectura, memoria y troubleshooting.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/context.md" target="_blank" rel="noopener noreferrer">context.md</a>
+              <a class="file-link" href="../../.claude/architecture.md" target="_blank" rel="noopener noreferrer">architecture.md</a>
+              <a class="file-link" href="../../.claude/troubleshooting.md" target="_blank" rel="noopener noreferrer">troubleshooting.md</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 3</div>
+            <h3>Artefactos HTML</h3>
+            <p>Cuando el output es para lectura humana, se consolida en docs/specs, docs/flows, docs/audits o docs/reviews siguiendo html-first.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/rules/html-first.md" target="_blank" rel="noopener noreferrer">html-first.md</a>
+              <a class="file-link" href="../specs/project-index-2026-05-18.html" target="_blank" rel="noopener noreferrer">project-index</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 4</div>
+            <h3>Memoria extendida</h3>
+            <p>El vault de Obsidian es opcional en este template, pero el comando hermes optimize está preparado para sincronizarlo cuando el proyecto destino lo use.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../src/cli/commands/hermes.ts" target="_blank" rel="noopener noreferrer">hermes.ts</a>
+              <a class="file-link" href="../../.claude/skills/skill-hermes-levels/SKILL.md" target="_blank" rel="noopener noreferrer">skill-hermes-levels</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="flow-panel" id="flow-hooks">
+        <div class="steps">
+          <article class="step">
+            <div class="step-number">Paso 1</div>
+            <h3>Intento de tool use</h3>
+            <p>Una edición, comando o acción de git pasa primero por los hooks de PreToolUse.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/hooks/PreToolUse/01-validate-dangerous-bash.sh" target="_blank" rel="noopener noreferrer">01-validate-dangerous-bash.sh</a>
+              <a class="file-link" href="../../.claude/hooks/PreToolUse/05-pipeline-phase-guard.py" target="_blank" rel="noopener noreferrer">05-pipeline-phase-guard.py</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 2</div>
+            <h3>Bloqueos preventivos</h3>
+            <p>Si aparece bash destructivo, un secreto o un push inseguro, el hook corta la operación antes de que llegue al repo.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/hooks/PreToolUse/03-write-security-scan.py" target="_blank" rel="noopener noreferrer">03-write-security-scan.py</a>
+              <a class="file-link" href="../../.claude/hooks/PreToolUse/04-git-push-main-guard.sh" target="_blank" rel="noopener noreferrer">04-git-push-main-guard.sh</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 3</div>
+            <h3>Post-procesado</h3>
+            <p>Cuando la acción sí ocurre, PostToolUse genera checkpoint, corre lint/tests y verifica si un flow HTML quedó viejo.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/hooks/PostToolUse/01-auto-checkpoint.sh" target="_blank" rel="noopener noreferrer">01-auto-checkpoint.sh</a>
+              <a class="file-link" href="../../.claude/hooks/PostToolUse/03-test-on-change.sh" target="_blank" rel="noopener noreferrer">03-test-on-change.sh</a>
+            </div>
+          </article>
+          <article class="step">
+            <div class="step-number">Paso 4</div>
+            <h3>Persistencia de contexto</h3>
+            <p>Antes de compactar, se resume la sesión. Luego quedan logs, checkpoints y notificaciones del estado resultante.</p>
+            <div class="inline-links">
+              <a class="file-link" href="../../.claude/hooks/PreCompact/01-session-summarizer.sh" target="_blank" rel="noopener noreferrer">01-session-summarizer.sh</a>
+              <a class="file-link" href="../../.claude/hooks/Notification/01-task-notifier.sh" target="_blank" rel="noopener noreferrer">01-task-notifier.sh</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="matrix">
+      <h2>Matriz de dependencias y salidas</h2>
+      <p class="section-copy">Resumen compacto de quién consume qué, qué genera y qué guardrail valida cada capa.</p>
+      <div class="matrix">
+        <table>
+          <thead>
+            <tr>
+              <th>Capa / carpeta</th>
+              <th>Consume</th>
+              <th>Produce</th>
+              <th>Validada por</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>.claude/agents</strong> Roles operativos</td>
+              <td>Reglas, contexto de tarea, archivos del repo</td>
+              <td>Diseños, auditorías, revisiones, decisiones de fase</td>
+              <td>orchestration.md, reviewer, tester</td>
+            </tr>
+            <tr>
+              <td><strong>.claude/skills</strong> Conocimiento reutilizable</td>
+              <td>Requests especializadas del usuario o del agente</td>
+              <td>Criterio, templates, pasos guiados, estándares</td>
+              <td>CLAUDE.md, skill-specific SKILL.md</td>
+            </tr>
+            <tr>
+              <td><strong>.claude/hooks</strong> Automatización preventiva</td>
+              <td>Eventos de tool use y compactado</td>
+              <td>Bloqueos, warnings, checkpoints, notificaciones</td>
+              <td>PreToolUse / PostToolUse / PreCompact / Notification</td>
+            </tr>
+            <tr>
+              <td><strong>src/cli</strong> Setup reutilizable</td>
+              <td>package.json, argumentos CLI, filesystem</td>
+              <td>Instalación del template, Hermes, sincronización Obsidian</td>
+              <td>tests de CLI, reviewer</td>
+            </tr>
+            <tr>
+              <td><strong>src/routes + src/services</strong> Runtime de API</td>
+              <td>Config, middleware, tools y servicios</td>
+              <td>Endpoints /api/v1, respuestas y errores controlados</td>
+              <td>health tests, unit tests, lint, typecheck</td>
+            </tr>
+            <tr>
+              <td><strong>tests/</strong> Evidencia ejecutable</td>
+              <td>Código fuente, scripts package.json, vitest config</td>
+              <td>Señales de regresión, coverage y contrato de comportamiento</td>
+              <td>tester, test-on-change.sh, gates de QA</td>
+            </tr>
+            <tr>
+              <td><strong>docs/</strong> Artefactos humanos</td>
+              <td>Reglas, decisiones, resultados del pipeline</td>
+              <td>Specs HTML, flows HTML, roadmap, tasks</td>
+              <td>html-first.md, flow-stale-detector.py</td>
+            </tr>
+            <tr>
+              <td><strong>.claude/*.md</strong> Contexto operativo</td>
+              <td>Arquitectura, troubleshooting, memoria, lineamientos</td>
+              <td>Guías internas para agentes y mantenedores</td>
+              <td>CLAUDE.md, README, reviewer humano</td>
+            </tr>
+            <tr>
+              <td><strong>.claude/logs</strong> Trazabilidad</td>
+              <td>Pipeline, checkpoints, auditorías, handoffs</td>
+              <td>Estado persistente y evidencia operativa</td>
+              <td>orchestrator, session summarizer, task notifier</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="timeline">
+      <h2>Timeline del ciclo de hooks</h2>
+      <p class="section-copy">Lectura lineal de cuándo entra cada familia de hooks y qué deja como evidencia.</p>
+      <div class="timeline">
+        <article class="timeline-card">
+          <h3>1. PreToolUse</h3>
+          <p>Primera barrera. Filtra comandos peligrosos, secretos, pushes a main sin pruebas y saltos de fase.</p>
+          <div class="inline-links">
+            <a class="file-link" href="../../.claude/hooks/PreToolUse/02-token-budget-guard.sh" target="_blank" rel="noopener noreferrer">token-budget</a>
+            <a class="file-link" href="../../.claude/hooks/PreToolUse/03-write-security-scan.py" target="_blank" rel="noopener noreferrer">write-security-scan</a>
+          </div>
+        </article>
+        <article class="timeline-card">
+          <h3>2. Tool execution</h3>
+          <p>Solo si la operación supera las barreras previas. Aquí ocurre la edición, lectura o comando real.</p>
+          <div class="inline-links">
+            <a class="file-link" href="../../.claude/settings.json" target="_blank" rel="noopener noreferrer">settings.json</a>
+          </div>
+        </article>
+        <article class="timeline-card">
+          <h3>3. PostToolUse</h3>
+          <p>Verifica el resultado: checkpoint, lint, tests y detección de flows desactualizados.</p>
+          <div class="inline-links">
+            <a class="file-link" href="../../.claude/hooks/PostToolUse/02-lint-on-edit.sh" target="_blank" rel="noopener noreferrer">lint-on-edit</a>
+            <a class="file-link" href="../../.claude/hooks/PostToolUse/04-flow-stale-detector.py" target="_blank" rel="noopener noreferrer">flow-stale-detector</a>
+          </div>
+        </article>
+        <article class="timeline-card">
+          <h3>4. Persistencia y aviso</h3>
+          <p>Se resume la sesión antes del compactado y se notifican eventos largos o hitos relevantes.</p>
+          <div class="inline-links">
+            <a class="file-link" href="../../.claude/hooks/PreCompact/01-session-summarizer.sh" target="_blank" rel="noopener noreferrer">session-summarizer</a>
+            <a class="file-link" href="../../.claude/hooks/Notification/01-task-notifier.sh" target="_blank" rel="noopener noreferrer">task-notifier</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="feedback">
+        <h3>Enviar corrección al agente</h3>
+        <p>Úsalo para pedir más detalle en una relación, agregar un nodo o corregir una dependencia.</p>
+        <textarea id="feedback" placeholder="Qué parte del mapa quieres ajustar o expandir..."></textarea>
+        <div class="link-row">
+          <button class="tab-button" type="button" id="copyBtn">Copiar como prompt</button>
+        </div>
+      </div>
+
+      <footer>
+        Generado el 2026-05-18. Artefacto HTML autocontenido, sin dependencias externas.
+      </footer>
+    </section>
+  </div>
+
+  <script>
+    function setFlow(flowName) {
+      document.querySelectorAll('.tab-button[data-flow]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.flow === flowName);
+      });
+      document.querySelectorAll('.flow-panel').forEach((panel) => {
+        panel.classList.toggle('active', panel.id === `flow-${flowName}`);
+      });
+    }
+
+    document.querySelectorAll('.tab-button[data-flow]').forEach((button) => {
+      button.addEventListener('click', () => setFlow(button.dataset.flow));
+    });
+
+    const copyButton = document.getElementById('copyBtn');
+    copyButton?.addEventListener('click', () => {
+      const feedback = document.getElementById('feedback');
+      if (!(feedback instanceof HTMLTextAreaElement) || !feedback.value.trim()) {
+        return;
+      }
+      const text = `Contexto: ${document.title}\n\nFeedback sobre el mapa de relaciones:\n${feedback.value.trim()}`;
+      navigator.clipboard.writeText(text).then(() => {
+        const previous = copyButton.textContent;
+        copyButton.textContent = 'Copiado';
+        globalThis.setTimeout(() => {
+          copyButton.textContent = previous;
+        }, 1800);
+      });
+    });
+  </script>
+</body>
+</html>
