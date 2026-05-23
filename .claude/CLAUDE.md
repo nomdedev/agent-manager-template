@@ -183,6 +183,188 @@ Este proyecto usa un vault de Obsidian en `obsidian/` como memoria extendida.
 El vault contiene el detalle de arquitectura, analisis, testing y deployments.
 Estas notas tienen prioridad sobre cualquier suposicion general.
 
+## Handoff Templates (entre fases)
+
+Para garantizar que la informacion no se pierda entre fases, usar estos templates:
+
+### Handoff Phase 1 → 2 (Domain → Architecture)
+```
+## HANDOFF: Domain → Architecture — [feature-id]
+**From:** domain-expert
+**To:** architect
+
+### Requirements Summary
+- [ ] Business requirements validated
+- [ ] Edge cases identified
+- [ ] Acceptance criteria defined
+
+### Domain Constraints
+- [Terminology restrictions]
+- [Business invariants that affect design]
+- [Sensitive data identified]
+
+### Scope
+- IN: ...
+- OUT: ...
+
+### Questions for Architect
+1. [Open question about feasibility]
+2. [Concern about domain complexity]
+```
+
+### Handoff Phase 2 → 3 (Architecture → Backend)
+```
+## HANDOFF: Architecture → Backend — [feature-id]
+**From:** architect
+**To:** api-expert / architect
+
+### Design Approved
+- [ ] Architecture option selected: [Option X]
+- [ ] Directory structure defined
+- [ ] Public interfaces documented
+
+### Files to Create/Modify
+- Create: [list]
+- Modify: [list]
+- Delete: [list]
+
+### API Contracts
+```typescript
+// Zod schemas and TypeScript interfaces
+```
+
+### Assumptions Made
+- [Assumption 1]
+- [Assumption 2]
+
+### Risks
+- [Risk and mitigation]
+```
+
+### Handoff Phase 3 → 4 (Backend → Security)
+```
+## HANDOFF: Backend → Security — [feature-id]
+**From:** api-expert / architect
+**To:** security-auditor
+
+### Implementation Complete
+- [ ] API routes functional
+- [ ] Zod schemas validated
+- [ ] Error handling consistent
+
+### New Endpoints
+| Method | Path | Auth | Input | Output |
+|--------|------|------|-------|--------|
+| POST | /api/v1/... | No | {...} | {...} |
+
+### Data Flow
+[Diagram or description of how data moves]
+
+### Env Vars Added
+- [VAR_NAME]: [purpose, sensitivity level]
+```
+
+### Handoff Phase 4 → 5 (Security → Develop)
+```
+## HANDOFF: Security → Develop — [feature-id]
+**From:** security-auditor
+**To:** api-expert / reviewer
+
+### Security Verdict: [GO / GO_WITH_NOTES]
+
+### Findings
+- CRITICAL: [none / mitigated]
+- HIGH: [none / mitigated]
+- MEDIUM: [list]
+- LOW: [list]
+
+### Required Mitigations (if any)
+- [ ] [Mitigation 1]
+- [ ] [Mitigation 2]
+
+### Security Checklist
+- [ ] No hardcoded secrets
+- [ ] Input validated
+- [ ] Error messages don't leak internals
+- [ ] CORS configured correctly
+```
+
+### Handoff Phase 5 → 6 (Develop → QA)
+```
+## HANDOFF: Develop → QA — [feature-id]
+**From:** api-expert / reviewer
+**To:** tester
+
+### Implementation Complete
+- [ ] Build successful
+- [ ] Code review: [APPROVED / MINOR CHANGES]
+- [ ] Lint clean
+
+### What Changed
+- Files modified: [list with brief description]
+- New dependencies: [list]
+- Config changes: [list]
+
+### Test Focus Areas
+- [ ] Happy path
+- [ ] Edge cases: [list]
+- [ ] Error cases: [list]
+- [ ] Boundary conditions: [list]
+
+### Known Limitations
+- [Limitation 1]
+- [Limitation 2]
+```
+
+### Handoff Phase 6 → 6.5 (QA → DevOps)
+```
+## HANDOFF: QA → DevOps — [feature-id]
+**From:** tester
+**To:** devops-infra
+
+### QA Verdict: [GO / GO_WITH_NOTES]
+
+### Test Results
+- Tests passing: X/Y
+- Coverage: X%
+- Edge cases covered: [list]
+
+### Build Artifacts
+- [ ] `npm run build` produces valid output
+- [ ] No console.log with sensitive data
+- [ ] `dist/` contents verified
+
+### Deploy Readiness
+- [ ] Env vars documented
+- [ ] No new secrets introduced
+- [ ] Rollback plan understood
+```
+
+### Handoff Phase 6.5 → 7 (DevOps → Production)
+```
+## HANDOFF: DevOps → Production — [feature-id]
+**From:** devops-infra
+**To:** orchestrator
+
+### DevOps Verdict: [GO / GO_WITH_NOTES]
+
+### Deploy Status
+- [ ] CI/CD green
+- [ ] `vercel.json` validated
+- [ ] Docker build passes (if applicable)
+- [ ] Env vars configured
+
+### Smoke Test Plan
+1. [Step 1: health check]
+2. [Step 2: API call]
+3. [Step 3: verify response]
+
+### Rollback Plan
+- Rollback command: [command]
+- Expected recovery time: [time]
+- Last known good version: [commit/vercel deployment]
+```
+
 ## Descripción
 Template reutilizable de Agent Manager para Claude Code. Contiene toda la configuración, hooks, MCPs, skills y documentación necesaria para inicializar CUALQUIER proyecto de software de forma profesional. Incluye un ejemplo funcional de AI Agent con Node.js + TypeScript.
 
@@ -228,10 +410,12 @@ agent-manager-template/
 │   ├── settings.json     # Permisos, hooks, MCPs, env vars
 │   ├── context.md        # Contexto rápido
 │   ├── architecture.md   # Arquitectura del sistema
-│   ├── agents/           # 7 agentes especializados
+│   ├── agents/           # 9 agentes especializados
+│   │   ├── api-expert.md       # API/Backend: Fastify routes, Zod schemas, OpenAPI
 │   │   ├── architect.md
+│   │   ├── devops-infra.md     # deployments, CI/CD, Vercel, Docker, rollback
 │   │   ├── domain-expert.md
-│   │   ├── frontend-expert.md
+│   │   ├── performance.md      # benchmarks, profiling, optimization
 │   │   ├── reviewer.md
 │   │   ├── security-auditor.md
 │   │   ├── tester.md
@@ -241,7 +425,8 @@ agent-manager-template/
 │   │   ├── security.md   # /security — OWASP Top 10
 │   │   ├── test.md       # /test — tests con coverage
 │   │   ├── review.md     # /review — code review
-│   │   ├── architect.md  # /architect — propuesta arquitectónica
+│   │   ├── api.md          # /api — implementación backend/API
+│   │   ├── architect.md    # /architect — propuesta arquitectónica
 │   │   ├── plan.md       # /plan — planificación
 │   │   ├── deploy.md     # /deploy — deploy a producción
 │   │   ├── checkpoint.md # /checkpoint — checkpoint de sesión
@@ -258,7 +443,8 @@ agent-manager-template/
 │   │   ├── security.md       # Reglas de seguridad y OWASP
 │   │   ├── orchestration.md  # Pipeline de 7 fases por equipos
 │   │   ├── domain.md         # Terminología de dominio y datos sensibles
-│   │   ├── frontend.md       # Tokens de color, estructura, estado, íconos
+│   │   ├── api.md            # Fastify, Zod schemas, OpenAPI, response formats
+│   │   ├── performance.md    # Benchmarks, profiling, optimization
 │   │   └── html-first.md     # HTML sobre Markdown para outputs de agentes
 │   ├── skills/           # 10 skills especializados
 │   │   ├── skill-agent-design/

@@ -1,93 +1,112 @@
-# Domain Rules — Generic Project
+# Domain Rules — Agent Manager Template
 
 This file defines the business domain vocabulary, workflows, and constraints.
-**Fill this in during project setup** with your specific domain.
-
-This file is referenced by:
+Referenced by:
 - `.claude/agents/domain-expert.md` — domain validation
 - `.claude/agents/tester.md` — business invariants in tests
 - `.claude/rules/orchestration.md` — Phase 1 domain review
 
 ---
 
+## Domain: Agent Manager Template
+
+This project is a **reusable template for managing AI software development agents** through a 7-phase gated pipeline. It includes a functional example AI Agent (Claudio) built with Node.js + Fastify.
+
+---
+
 ## Domain Glossary
 
-Define the canonical terms for your domain. This prevents terminology drift across the codebase.
+| Correct Term | Avoid | Definition |
+|--------------|-------|------------|
+| **Agent** | Bot, Assistant, Model | An autonomous AI worker with a specific role |
+| **Tool** | Function, Utility, Helper | A capability an agent can invoke |
+| **Pipeline** | Workflow, Process | The 7-phase gated sequence every feature must traverse |
+| **Phase** | Step, Stage | One of 7 mandatory checkpoints in the pipeline |
+| **Gate** | Checkpoint, Review | Exit criteria to advance to next phase |
+| **Feature** | Ticket, Task, Item | Unit of work tracked through the pipeline |
+| **Bounce** | Rework, Return | Feature fails gate, returns to earlier phase |
+| **Verdict** | Status, Result | Phase outcome: GO, GO_WITH_NOTES, BLOCKED |
+| **Orchestrator** | Manager, Coordinator | Director agent that routes features |
+| **Conversation** | Chat, Session | Message exchange between user and agent |
 
-| Correct Term | Avoid |
-|--------------|-------|
-| [your term] | [synonym to avoid] |
-| [your term] | [synonym to avoid] |
-| [your term] | [synonym to avoid] |
-
-**Rule:** Use only the terms in the "Correct Term" column in UI labels, variable names, comments, and documentation.
+**Rule:** Use only "Correct Term" column in code, labels, comments, docs.
 
 ---
 
-## Core Business Workflow
-
-Define the main pipeline/state machine for your domain:
+## Core Workflow: 7-Phase Pipeline
 
 ```
-[State 1] → [State 2] → [State 3] → [State 4] → [State 5]
+Phase 1: Domain & Requirements → Phase 2: Architecture → Phase 3: Backend
+→ Phase 4: Security → Phase 5: Develop & Deploy → Phase 6: QA/Testing
+→ Phase 6.5: DevOps/Infra → Phase 7: Production
 ```
 
-### Entity States
+### Allowed Transitions
+- Normal: Phase N → Phase N+1 (on GO)
+- Bounce: Phase N → Phase M (M < N, on BLOCKED)
+- Escalation: 3+ bounces to same phase → pause, escalate to user
 
-For each main entity, define valid states and allowed transitions:
-
-**[Entity 1]:**
-- `[state_a]` → `[state_b]` (condition: ...)
-- `[state_b]` → `[state_c]` (condition: ...)
-
----
-
-## Key Business Entities
-
-List the main entities, their purpose, and any constraints:
-
-| Entity | Purpose | Key Constraints |
-|--------|---------|-----------------|
-| [Entity 1] | | |
-| [Entity 2] | | |
-| [Entity 3] | | |
+### Forbidden
+- Skipping phases
+- Develop without Security approval
+- Production with active blockers
 
 ---
 
-## KPIs — Key Performance Indicators
+## Key Entities
 
-Define measurable metrics relevant to this business:
+| Entity | Purpose | Constraints |
+|--------|---------|-------------|
+| Feature | Work unit in pipeline | Unique ID (FEAT-XXX), type, status, history |
+| Agent | Specialized AI worker | Role, permissions, stack, triggers |
+| Tool | Invokable capability | Name, description, parameters, handler |
+| Conversation | User-agent message context | Session ID, history, tools used |
+| Pipeline State | Feature registry | JSON file, single source of truth |
 
-- **[Metric 1]:** How calculated, why it matters
-- **[Metric 2]:** How calculated, why it matters
-- **[Metric 3]:** How calculated, why it matters
+---
+
+## KPIs
+
+| Metric | Calculation | Why |
+|--------|-------------|-----|
+| Pipeline Velocity | Avg Phase 1→7 time | Delivery speed |
+| Bounce Rate | Bounced/Total × 100 | Early phase quality |
+| Gate Pass Rate | Passed first try/Total × 100 | First-time quality |
+| Security Findings | CRITICAL/HIGH per audit | Security posture |
+| Test Coverage | Covered/Total lines × 100 | Test completeness |
+| Deploy Frequency | Production deploys/week | CI/CD health |
 
 ---
 
 ## Sensitive Data
 
-Identify which data requires special handling (PII, PHI, financial, etc.):
-
-| Data Field | Sensitivity Level | Rules |
-|------------|------------------|-------|
-| [field] | HIGH | Never log, never expose in aggregates |
-| [field] | MEDIUM | Mask in UI, audit on access |
+| Field | Level | Rules |
+|-------|-------|-------|
+| OPENAI_API_KEY | CRITICAL | Server-only, never log, never expose |
+| ANTHROPIC_API_KEY | CRITICAL | Server-only, never log, never expose |
+| API keys in `.env` | CRITICAL | Never commit, never expose in client |
+| Conversation content | MEDIUM | Don't log full messages |
+| Pipeline state | LOW | Internal metadata, safe to log |
 
 ---
 
-## Business Invariants (Rules That Must Never Be Violated)
+## Business Invariants
 
-1. [Invariant 1 — e.g., "An entity cannot move backward in the workflow"]
-2. [Invariant 2]
-3. [Invariant 3]
-
-These become test cases. Every business invariant must have a test that fails if the rule is broken.
+1. No phase skipping — every phase in order
+2. Security before develop — Phase 4 approves before Phase 5
+3. No deploy with blockers — deployLock=true if any BLOCKED
+4. Unique feature IDs — FEAT-XXX format
+5. Verdict required — no transition without documented verdict
+6. Bounce to origin — earliest phase where root cause originated
+7. Agent permissions — no actions outside scope
 
 ---
 
 ## Out of Scope
 
-Explicitly define what this system does NOT handle:
-
-- [Out of scope 1]
-- [Out of scope 2]
+- Real-time collaboration (WebSockets)
+- Persistent database (in-memory/JSON only)
+- User authentication
+- Frontend UI (backend API only)
+- Multi-tenancy
+- Billing/metering

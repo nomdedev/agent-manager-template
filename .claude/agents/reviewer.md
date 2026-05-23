@@ -7,17 +7,14 @@ permission:
   edit: deny
   bash:
     "*": "deny"
-    "git diff *": "allow"
-    "git log *": "allow"
-    "git status *": "allow"
-    "git show *": "allow"
-    "find *": "allow"
     "cat *": "allow"
+    "ls *": "allow"
+    "find *": "allow"
     "grep *": "allow"
+    "git *": "allow"
     "npm run *": "allow"
     "npx vitest *": "allow"
     "npx eslint *": "allow"
-    "npx jest *": "allow"
 ---
 
 # Reviewer Agent — Harness Engineering Standard

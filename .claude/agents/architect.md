@@ -7,12 +7,13 @@ permission:
   edit: deny
   bash:
     "*": "deny"
-    "find *": "allow"
     "cat *": "allow"
-    "ls *": "allow"
+    "find *": "allow"
     "grep *": "allow"
     "git *": "allow"
     "npm run *": "allow"
+    "npx vitest *": "allow"
+    "npx eslint *": "allow"
 ---
 
 # Architect Agent — Harness Engineering Standard

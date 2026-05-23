@@ -7,13 +7,13 @@ permission:
   edit: deny
   bash:
     "*": "deny"
-    "npm audit *": "allow"
-    "npm outdated *": "allow"
+    "cat *": "allow"
     "find *": "allow"
     "grep *": "allow"
-    "cat *": "allow"
-    "git log *": "allow"
-    "ls *": "allow"
+    "git *": "allow"
+    "npm run *": "allow"
+    "npm audit *": "allow"
+    "npm outdated *": "allow"
 ---
 
 # Agent: Security Auditor — Harness Engineering Standard

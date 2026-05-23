@@ -4,17 +4,16 @@ description: >
   runs test suites. Stack: Vitest/Jest + Testing Library. Mission: BREAK EVERYTHING.
 mode: subagent
 permission:
-  edit: allow
+  edit: deny
   bash:
-    "*": "ask"
-    "npx vitest *": "allow"
-    "npx jest *": "allow"
-    "npm run *": "allow"
-    "npm test *": "allow"
-    "npx eslint *": "allow"
+    "*": "deny"
     "cat *": "allow"
     "find *": "allow"
     "grep *": "allow"
+    "git *": "allow"
+    "npm run *": "allow"
+    "npx vitest *": "allow"
+    "npx eslint *": "allow"
 ---
 
 # Agent: Tester QA — Harness Engineering Standard

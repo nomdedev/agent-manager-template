@@ -20,15 +20,15 @@
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  EQUIPO 1 — DISEÑO (Fases 1-2)                                              │
-│  Agentes: domain-expert → architect → developer (solo diseño)               │
+│  Agentes: domain-expert → architect → api-expert (solo diseño API)          │
 │  Entrega: Requerimientos validados + Propuesta arquitectónica + Contratos   │
 └─────────────────────────────────────────────────────────────────────────────┘
                                      │ Gate: APROBADO
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  EQUIPO 2 — BACKEND (Fase 3)                                                │
-│  Agentes: architect (DB/API design) + Orquestador (supervisión)             │
-│  Entrega: Schema SQL + API routes funcionales + Datos de prueba             │
+│  Agentes: architect (DB/API design) + api-expert (implementación)           │
+│  Entrega: Schema + API routes funcionales + Zod schemas + Datos de prueba   │
 └─────────────────────────────────────────────────────────────────────────────┘
                                      │ Gate: APROBADO
                                      ▼
@@ -43,7 +43,7 @@
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  EQUIPO 4 — DEVELOP & DEPLOY (Fase 5)                                       │
-│  Agentes: developer (implementación) + reviewer (code review)               │
+│  Agentes: api-expert (implementación) + reviewer (code review)              │
 │  Entrega: Código implementado, build exitoso, optimizado                    │
 │  Incluye: Fase de Code Review interno antes de entregar al QA.              │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -63,7 +63,15 @@
                                      │ Gate: APROBADO (todos los tests pasan)
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  EQUIPO 6 — PRODUCCIÓN / Go-No-Go (Fase 7)                                  │
+│  EQUIPO 6 — DEVOPS / INFRA (Fase 6.5)                                       │
+│  Agente: devops-infra                                                       │
+│  Entrega: Deploy readiness, CI/CD green, infra audit, rollback plan         │
+│  Verifica: Build limpio, Vercel config, env vars, Docker, smoke tests       │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                     │ Gate: APROBADO (deploy listo)
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  EQUIPO 7 — PRODUCCIÓN / Go-No-Go (Fase 7)                                  │
 │  Responsable: Orquestador Principal (NO se delega)                          │
 │  Verificación real en servidor productivo/preview con datos reales.         │
 │  Entrega: Reporte de Fase 7 con VEREDICTO FINAL: GO o NO-GO.                │
@@ -118,9 +126,9 @@
 
 ## Fase 2 — Arquitectura (Equipo 1: Diseño)
 
-**Responsable:** `architect` agent (con apoyo de `developer` para diseño UI si aplica)
+**Responsable:** `architect` agent (con apoyo de `api-expert` para diseño API si aplica)
 **Input:** Requerimientos aprobados de Fase 1
-**Output:** Propuesta arquitectónica con interfaces, árbol de archivos y contratos
+**Output:** Propuesta arquitectónica con interfaces, árbol de archivos y contratos API
 
 ### Checklist de entregables
 - [ ] Se leyó el código existente relacionado (Rule 8)
@@ -129,8 +137,9 @@
 - [ ] Se especificó el árbol de archivos (crear/modificar/eliminar)
 - [ ] Se evaluaron al menos 2 opciones de diseño con pros/cons
 - [ ] Se identificó impacto en el bundle/build
-- [ ] Se definieron contratos entre frontend y backend (API shape)
+- [ ] Se definieron contratos API (Zod schemas, request/response shapes)
 - [ ] Se documentaron supuestos explícitos
+- [ ] Se identificaron env vars nuevas necesarias
 
 ### Gate de salida
 **APROBADO** cuando: El diseño es mínimo, no especulativo, y respeta constraints inmutables del proyecto.
@@ -387,7 +396,51 @@ Cuando QA devuelve **BLOQUEADO**, el Orquestador Principal debe:
 
 ---
 
-## Fase 7 — Producción / Go-No-Go (Equipo 6: Producción)
+### Fase 6.5 — DevOps / Infra (Equipo 6: DevOps)
+
+**Responsable:** `devops-infra` agent
+**Input:** Código aprobado por QA (Fase 6)
+**Output:** Deploy readiness report, CI/CD verification, infra audit
+
+### Checklist de entregables
+- [ ] Build limpio en entorno fresco (`npm ci && npm run build`)
+- [ ] CI/CD pipeline verde en `main`
+- [ ] `vercel.json` validado contra build output actual
+- [ ] Variables de entorno verificadas en dashboard de Vercel
+- [ ] Sin secrets en repo ni artefactos de build
+- [ ] Plan de rollback documentado
+- [ ] Docker build pasa (si aplica)
+- [ ] Checklist de infra audit completado
+
+### Gate de salida
+**APROBADO** cuando: Deploy listo, CI/CD verde, infra audit pasado.
+**BLOQUEADO** cuando: Build falla en CI, config de infra rota, o secrets expuestos.
+
+### Formato de reporte
+```markdown
+## FASE 6.5 — DEVOPS / INFRA — [feature] — [fecha]
+
+### Build Status
+- Limpio: ✅ / ❌
+- CI/CD: ✅ / ❌
+
+### Infra Audit
+- Vercel config: ✅ / ❌
+- Env vars: ✅ / ❌
+- Secrets scan: ✅ / ❌
+- Docker: ✅ / ❌ (si aplica)
+
+### Rollback Plan
+- Comando: ...
+- Tiempo estimado: ...
+
+### VEREDICTO: [APROBADO | BLOQUEADO]
+**Razón:** ...
+```
+
+---
+
+## Fase 7 — Producción / Go-No-Go (Equipo 7: Producción)
 
 **Responsable:** Orquestador principal (este paso NO se delega)
 **Input:** Todas las fases anteriores aprobadas
@@ -396,16 +449,16 @@ Cuando QA devuelve **BLOQUEADO**, el Orquestador Principal debe:
 ### Checklist de entregables (obligatorio, no negociable)
 - [ ] Build exitoso, cero errores
 - [ ] Servidor de preview/producción levantado
-- [ ] Navegación real en browser a la funcionalidad implementada
-- [ ] Datos reales visibles en la UI (no mocks)
-- [ ] Interacciones disparan los flujos esperados y actualizan la UI
-- [ ] Console del browser revisado: sin errores de runtime
-- [ ] Evidencia guardada (screenshots o descripción detallada)
+- [ ] Health check endpoint responde correctamente
+- [ ] API endpoints responden con datos reales (no mocks)
+- [ ] Logs de servidor revisados: sin errores de runtime
+- [ ] Smoke tests ejecutados y pasando
+- [ ] Evidencia guardada (logs o descripción detallada)
 - [ ] Checkpoint final emitido con formato Rule 10
 
 ### Gate de salida
-**GO** cuando: La funcionalidad funciona con datos reales, sin errores visibles, y el usuario podría usarla.
-**NO-GO** cuando: Cualquier falla visible en producción (404, error de datos, crash, spinner infinito).
+**GO** cuando: La funcionalidad funciona con datos reales, sin errores visibles, y la API responde correctamente.
+**NO-GO** cuando: Cualquier falla visible en producción (500, error de datos, crash, timeout).
 
 ### Formato de reporte
 ```markdown
@@ -414,12 +467,13 @@ Cuando QA devuelve **BLOQUEADO**, el Orquestador Principal debe:
 ### Verificación realizada
 - Build: ✅ / ❌
 - Servidor: ✅ / ❌
-- Datos reales visibles: ✅ / ❌
-- Interacciones funcionales: ✅ / ❌
-- Console sin errores: ✅ / ❌
+- Health check: ✅ / ❌
+- API endpoints con datos reales: ✅ / ❌
+- Logs sin errores: ✅ / ❌
+- Smoke tests: ✅ / ❌
 
 ### Evidencia
-- [rutas a screenshots o descripción de lo observado]
+- [rutas a logs o descripción de lo observado]
 
 ### VEREDICTO FINAL: [GO | NO-GO]
 **Razón:** ...
@@ -452,8 +506,9 @@ Cada feature en desarrollo debe tener una entrada en `.claude/logs/pipeline-stat
         {"phase": 2, "team": "architect", "verdict": "APROBADO", "file": "fase2-20260516.md"},
         {"phase": 3, "team": "backend", "verdict": "APROBADO", "file": "fase3-20260516.md"},
         {"phase": 4, "team": "security-auditor", "verdict": "APROBADO", "file": "fase4-20260516.md"},
-        {"phase": 5, "team": "developer", "verdict": "APROBADO", "file": "fase5-20260516.md"},
+        {"phase": 5, "team": "api-expert", "verdict": "APROBADO", "file": "fase5-20260516.md"},
         {"phase": 6, "team": "tester", "verdict": "APROBADO", "file": "fase6-20260516.md"},
+        {"phase": 6.5, "team": "devops-infra", "verdict": "APROBADO", "file": "fase6.5-20260516.md"},
         {"phase": 7, "team": "orchestrator", "verdict": "GO", "file": "fase7-20260516.md"}
       ]
     }
@@ -470,6 +525,6 @@ Cada feature en desarrollo debe tener una entrada en `.claude/logs/pipeline-stat
 3. Recibir el reporte del equipo. Verificar el gate de salida. Si es APROBADO, actualizar `pipeline-state.json` y autorizar el paso al siguiente equipo.
 4. Si un equipo devuelve BLOQUEADO, no borrar la tarea. Actualizar con el bloqueante y asignar al equipo de corrección.
 5. **NUNCA** permitir que el Equipo 4 (Develop) reciba una tarea sin el veredicto APROBADO del Equipo 3 (Seguridad).
-6. **NUNCA** permitir que una feature vaya a Producción (Fase 7) sin el veredicto APROBADO del Equipo 5 (QA).
+6. **NUNCA** permitir que una feature vaya a Producción (Fase 7) sin el veredicto APROBADO del Equipo 5 (QA) y Equipo 6 (DevOps).
 7. Guardar cada reporte en `.claude/logs/audits/features/{feature-id}/{fase}-{fecha}.md`.
 8. Solo cuando Fase 7 diga GO, se puede pasar a la siguiente feature.

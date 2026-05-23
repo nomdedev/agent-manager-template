@@ -39,7 +39,9 @@ TEAM 4: Develop       →  Phase 5     →  developer (implementation) + reviewe
       ↓
 TEAM 5: QA            →  Phase 6     →  tester (mission: BREAK EVERYTHING)
       ↓
-TEAM 6: Production    →  Phase 7     →  orchestrator principal (NOT delegated)
+TEAM 6: DevOps/Infra  →  Phase 6.5   →  devops-infra (deploy, CI/CD, infra audit)
+      ↓
+TEAM 7: Production    →  Phase 7     →  orchestrator principal (NOT delegated)
 ```
 
 | Phase | Team | Agent(s) | Exit Gate |
@@ -50,6 +52,7 @@ TEAM 6: Production    →  Phase 7     →  orchestrator principal (NOT delegate
 | 4. Security | Security | `security-auditor` | No CRITICAL or HIGH findings without mitigation |
 | 5. Develop & Deploy | Develop | `developer` + `reviewer` | Build successful, code optimized |
 | 6. QA / Testing | QA | `tester` | Tests passing, coverage documented, everything broken and fixed |
+| 6.5. DevOps / Infra | DevOps | `devops-infra` | Deploy ready, CI/CD green, infra audit passed |
 | 7. Production | Production | orchestrator | Real test on production server, real data verified |
 
 ---
@@ -117,6 +120,7 @@ Based on the current phase, route to the corresponding team:
 | 4 | Security team | `security-auditor` audits all vectors |
 | 5 | Develop team | `developer` implements, `reviewer` reviews code |
 | 6 | QA team | `tester` tries to break everything |
+| 6.5 | DevOps team | `devops-infra` validates deploy readiness, CI/CD, infra |
 | 7 | Production | orchestrator verifies on real server |
 
 ### Step 2 — Receive Report
@@ -312,6 +316,20 @@ Location: `.claude/logs/pipeline-state.json`
 - [ ] Test report delivered
 
 **Exit gate:** Tests passing, coverage documented, edge cases verified.
+
+### Phase 6.5 — DevOps / Infra (DevOps Team)
+**Agent:** `devops-infra`
+
+- [ ] Build succeeds in clean environment (`npm ci && npm run build`)
+- [ ] CI/CD pipeline green on `main`
+- [ ] `vercel.json` validated against current build output
+- [ ] Environment variables verified in Vercel dashboard
+- [ ] No secrets in repo or build artifacts
+- [ ] Rollback plan documented
+- [ ] Docker build passes (if Dockerfile exists)
+- [ ] Infrastructure audit checklist completed
+
+**Exit gate:** Deploy ready, CI/CD green, infra audit passed.
 
 ### Phase 7 — Production (Production Team)
 **Agent:** orchestrator
