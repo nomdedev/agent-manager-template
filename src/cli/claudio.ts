@@ -10,6 +10,8 @@
 
 import { runEvoluciona } from './commands/evoluciona.js'
 import { runHermes } from './commands/hermes.js'
+import { vaultCommand } from './commands/vault.js'
+import { harnessCommand } from './commands/harness.js'
 
 const VERSION = '0.1.0'
 
@@ -32,6 +34,16 @@ COMANDOS
     Opciones adicionales en el wizard:
       · Vault de Obsidian (memoria extendida del proyecto)
       · Hermes MCP server (HTTP/SSE o stdio)
+
+  vault <subcomando>              Gestión del vault de Obsidian
+    analyze              Analiza salud del vault (tokens, links, eficiencia)
+    optimize             Optimiza notas para eficiencia de tokens
+    tokens <archivo>     Mide tokens en un archivo
+
+  harness <subcomando>            Auditoría del 12-Rule Standard
+    audit [feature]      Audita cumplimiento de reglas
+    report [feature]     Genera reporte de eficiencia
+    measure-file <f>     Mide tokens de un archivo
 
   hermes <subcomando>
     Gestión de Hermes Agent con Obsidian como knowledge DB.
@@ -92,6 +104,16 @@ async function main(): Promise<void> {
 
     case 'hermes': {
       await runHermes(args[1], args.slice(2))
+      break
+    }
+
+    case 'vault': {
+      await vaultCommand(args[1], args.slice(2))
+      break
+    }
+
+    case 'harness': {
+      await harnessCommand(args[1], args.slice(2))
       break
     }
 

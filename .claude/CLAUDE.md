@@ -410,15 +410,17 @@ agent-manager-template/
 │   ├── settings.json     # Permisos, hooks, MCPs, env vars
 │   ├── context.md        # Contexto rápido
 │   ├── architecture.md   # Arquitectura del sistema
-│   ├── agents/           # 9 agentes especializados
+│   ├── agents/           # 10 agentes especializados
 │   │   ├── api-expert.md       # API/Backend: Fastify routes, Zod schemas, OpenAPI
 │   │   ├── architect.md
 │   │   ├── devops-infra.md     # deployments, CI/CD, Vercel, Docker, rollback
 │   │   ├── domain-expert.md
+│   │   ├── harness-engineer.md # 12-Rule enforcement, token efficiency audits
 │   │   ├── performance.md      # benchmarks, profiling, optimization
 │   │   ├── reviewer.md
 │   │   ├── security-auditor.md
 │   │   ├── tester.md
+│   │   ├── vault-keeper.md     # Obsidian vault optimization, context hierarchy
 │   │   └── orchestrator.md
 │   ├── commands/         # 12 comandos slash
 │   │   ├── audit.md      # /audit — auditoría completa

@@ -1,31 +1,50 @@
-# Convenciones de codigo
+---
+h-level: 1
+created: 2026-05-23
+modified: 2026-05-23
+agent-relevant: true
+tokens: 350
+---
+
+# Convenciones de Codigo
 
 ## TypeScript
 
-- Preferir tipos explicitos cuando aclaren contratos.
-- Evitar any; usar unknown y type guards cuando sea necesario.
-- Mantener APIs pequenas y cambios acotados.
+- ESM nativo, strict mode
+- No `any` — usar `unknown` + type guards
+- Tipos explicitos en exports publicos
+- Preferir named exports
+
+## Fastify
+
+- Routes: async functions con `FastifyInstance`
+- Prefix en `src/index.ts`
+- Zod schemas para todo input
+- Response format consistente:
+  ```json
+  { "success": true, "data": {}, "meta": {} }
+  ```
 
 ## Estructura
 
-- src/ contiene runtime, servicios, rutas, tools y CLI.
-- tests/unit cubre logica aislada.
-- tests/integration cubre wiring del CLI y endpoints.
-- docs/ guarda artefactos para humanos.
+```
+src/
+  routes/     # Route handlers
+  services/   # Business logic
+  types/      # Shared types
+  config/     # Env validation (Zod)
+  middleware/ # Error handlers
+  utils/      # Logger, helpers
+```
 
-## Calidad
+## Testing
 
-- Ejecutar tests del area tocada antes de cerrar la tarea.
-- Mantener compatibilidad con el comportamiento actual salvo que el cambio la requiera.
-- No mezclar refactors amplios con fixes pequenos.
+- Vitest + Supertest
+- Colocado junto al fuente: `*.test.ts`
+- Naming: `it('should <behavior> when <condition>')`
 
-## Logging y errores
+## Logging
 
-- Usar logger estructurado en lugar de console.log para runtime.
-- No exponer secretos ni stack traces sensibles.
-- Manejar errores de forma explicita.
-
-## Dependencias
-
-- Preferir libreria estandar y soluciones simples.
-- Agregar dependencias solo cuando reduzcan complejidad real.
+- Pino (structured JSON)
+- Nunca `console.log`
+- Incluir `requestId` en todos los logs
