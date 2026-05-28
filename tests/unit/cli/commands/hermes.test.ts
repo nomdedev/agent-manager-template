@@ -22,6 +22,15 @@ vi.mock('../../../../src/cli/utils/prompts.js', () => ({
   closePrompts: vi.fn(),
 }))
 
+const installHermesAgentMock = vi.fn().mockResolvedValue({
+  installDir: '/tmp/hermes-agent',
+  ref: { kind: 'tag', ref: 'v0.14.0' },
+})
+
+vi.mock('../../../../src/cli/commands/hermes-installer.js', () => ({
+  installHermesAgent: (...args: unknown[]) => installHermesAgentMock(...args),
+}))
+
 import { runHermes } from '../../../../src/cli/commands/hermes.js'
 
 describe('runHermes — dispatch', () => {
@@ -136,6 +145,14 @@ describe('runHermes — dispatch', () => {
     await runHermes('gepa')
     const output = logSpy.mock.calls.flat().join('\n')
     expect(output).toContain('git clone')
+  })
+
+  // ─── install subcommand (no remote bash) ─────────────────────────────────
+
+  it('install delegates to installHermesAgent', async () => {
+    installHermesAgentMock.mockClear()
+    await runHermes('install')
+    expect(installHermesAgentMock).toHaveBeenCalledTimes(1)
   })
 })
 

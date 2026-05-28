@@ -172,16 +172,32 @@ Banned phrases without proof:
 
 ---
 
-## Vault de Obsidian (cerebro del proyecto)
+## Agent skills (mattpocock/skills — obligatorio en cada tarea)
 
-Este proyecto usa un vault de Obsidian en `obsidian/` como memoria extendida.
-**Al iniciar cada sesion, leer obligatoriamente:**
+Skills de ingeniería en `.agents/skills/` (29 skills, lockfile `skills-lock.json`). Reinstalar: `pnpm run skills:install`.
+
+| Tema | Ubicación |
+| ---- | --------- |
+| Issue tracker | [docs/agents/issue-tracker.md](../docs/agents/issue-tracker.md) |
+| Triage labels | [docs/agents/triage-labels.md](../docs/agents/triage-labels.md) |
+| Domain docs | [docs/agents/domain.md](../docs/agents/domain.md) + `CONTEXT.md` en raíz |
+| **Ciclo obligatorio por fase** | [rules/mattpocock-task-cycle.md](rules/mattpocock-task-cycle.md) |
+| Índice skill template | [skills/skill-mattpocock-cycle/SKILL.md](skills/skill-mattpocock-cycle/SKILL.md) |
+
+**Regla:** Antes de planificar o implementar una tarea, leer `skill-mattpocock-cycle` y los skills mattpocock indicados en `mattpocock-task-cycle.md`. No saltear sin documentar `SKILLS_SKIPPED` con motivo.
+
+También existen los 10 skills propios del template en `.claude/skills/skill-*` (complementan el ciclo).
+
+---
+
+## Vault de Obsidian (opcional)
+
+Si existe `obsidian/00-README.md`, leer al iniciar sesión:
 1. `obsidian/00-README.md`
 2. `obsidian/01-Agentes/Reglas para agentes.md`
 3. `obsidian/02-Estandares/Stack tecnologico.md` y `obsidian/02-Estandares/Convenciones de codigo.md`
 
-El vault contiene el detalle de arquitectura, analisis, testing y deployments.
-Estas notas tienen prioridad sobre cualquier suposicion general.
+Si no existe el vault, usar `.claude/context.md` y `.claude/memory.md` como fuente de verdad.
 
 ## Handoff Templates (entre fases)
 
@@ -410,7 +426,7 @@ agent-manager-template/
 │   ├── settings.json     # Permisos, hooks, MCPs, env vars
 │   ├── context.md        # Contexto rápido
 │   ├── architecture.md   # Arquitectura del sistema
-│   ├── agents/           # 10 agentes especializados
+│   ├── agents/           # 12 agentes especializados
 │   │   ├── api-expert.md       # API/Backend: Fastify routes, Zod schemas, OpenAPI
 │   │   ├── architect.md
 │   │   ├── devops-infra.md     # deployments, CI/CD, Vercel, Docker, rollback
@@ -422,7 +438,7 @@ agent-manager-template/
 │   │   ├── tester.md
 │   │   ├── vault-keeper.md     # Obsidian vault optimization, context hierarchy
 │   │   └── orchestrator.md
-│   ├── commands/         # 12 comandos slash
+│   ├── commands/         # 13 comandos slash
 │   │   ├── audit.md      # /audit — auditoría completa
 │   │   ├── security.md   # /security — OWASP Top 10
 │   │   ├── test.md       # /test — tests con coverage
@@ -442,13 +458,13 @@ agent-manager-template/
 │   │   ├── PreCompact/   # 1 hook (session summarizer)
 │   │   └── Notification/ # 1 hook (task notifier)
 │   ├── rules/            # Reglas del proyecto
-│   │   ├── security.md       # Reglas de seguridad y OWASP
-│   │   ├── orchestration.md  # Pipeline de 7 fases por equipos
-│   │   ├── domain.md         # Terminología de dominio y datos sensibles
-│   │   ├── api.md            # Fastify, Zod schemas, OpenAPI, response formats
-│   │   ├── performance.md    # Benchmarks, profiling, optimization
-│   │   └── html-first.md     # HTML sobre Markdown para outputs de agentes
-│   ├── skills/           # 10 skills especializados
+│   │   ├── security.md
+│   │   ├── orchestration.md
+│   │   ├── mattpocock-task-cycle.md  # ciclo obligatorio mattpocock/skills
+│   │   ├── domain.md
+│   │   ├── api.md
+│   │   └── html-first.md
+│   ├── skills/           # 11 skills template (+ skill-mattpocock-cycle)
 │   │   ├── skill-agent-design/
 │   │   ├── skill-api-design/
 │   │   ├── skill-code-review/
@@ -458,8 +474,13 @@ agent-manager-template/
 │   │   ├── skill-hermes-levels/   # configurar Hermes Agent en 4 niveles
 │   │   ├── skill-html-artifacts/  # HTML specs, audits, flows, reviews
 │   │   ├── skill-refactoring/
-│   │   └── skill-testing/
+│   │   ├── skill-testing/
+│   │   └── skill-mattpocock-cycle/
 │   └── logs/             # Audit trail y pipeline state
+├── .agents/skills/       # 29 skills mattpocock (skills-lock.json)
+├── docs/agents/          # issue tracker, triage, domain para mattpocock
+├── CONTEXT.md            # puntero de contexto (raíz)
+├── AGENTS.md             # resumen para agentes
 │       ├── pipeline-state.json  # Estado del pipeline de features
 │       ├── audit.log            # Log persistente de seguridad
 │       ├── audits/              # Reportes de auditoría

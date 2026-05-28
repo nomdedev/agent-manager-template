@@ -5,6 +5,8 @@
 **Documentación:** Cada fase debe producir un artefacto de reporte guardado en `.claude/logs/audits/features/{feature-id}/{fase}-{fecha}.md`.
 **Estado del pipeline:** Se registra en `.claude/logs/pipeline-state.json`. Ningún código se mergea ni deploya sin que este archivo refleje status: GO.
 
+**Skills mattpocock (obligatorio):** En cada fase, cargar los skills indicados en [mattpocock-task-cycle.md](./mattpocock-task-cycle.md) antes de entregar el artefacto de la fase. Empezar toda feature con `skill-mattpocock-cycle`.
+
 ---
 
 ## Pipeline Secuencial por Equipos (Gated, NO se saltea NUNCA)

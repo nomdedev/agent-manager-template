@@ -1,5 +1,17 @@
 # Troubleshooting — Agent Manager Template
 
+## Verificación rápida
+
+```bash
+claudio doctor
+```
+
+Ejecutá `claudio doctor` antes de depurar manualmente. Corrige MCP paths, permisos de hooks (Unix) y crea `.env` desde `.env.example` en el template.
+
+Si `.claude/` no existe: `claudio init` o `claudio evoluciona ./tu-proyecto`.
+
+---
+
 ## Errores de Instalación
 
 ### `npm install` falla
@@ -15,6 +27,15 @@
 ### Variables de entorno faltantes
 - **Síntoma:** `Error: OPENAI_API_KEY is required`
 - **Solución:** Copiar `.env.example` a `.env` y completar los valores.
+
+### `claudio hermes install` falla
+
+- Necesitás **git** instalado y en el PATH.
+- Si la carpeta del repo existe pero no es un clone git, movela o borrala (`%LOCALAPPDATA%\hermes\hermes-agent` en Windows, `~/.hermes/hermes-agent` en Unix).
+### Hermes instalado pero no está en el PATH
+
+- Cerrá y abrí la terminal.
+- Ejecutá `hermes setup` en PowerShell (Windows) o en la misma shell donde instalaste.
 
 ### MCPs no conectan
 - **Síntoma:** Herramientas MCP no aparecen disponibles

@@ -2,6 +2,13 @@
 description: Plan a feature or task before implementation
 ---
 
+**Obligatorio antes de planificar:**
+
+1. Leer y seguir `.claude/skills/skill-mattpocock-cycle/SKILL.md`
+2. Aplicar `.claude/rules/mattpocock-task-cycle.md` (skills en `.agents/skills/`)
+3. Si el área es desconocida: skill `zoom-out` primero
+4. Si hace falta PRD/issue: skill `to-prd` + `docs/agents/issue-tracker.md`
+
 Create a detailed implementation plan for: $ARGUMENTS
 
 Follow this structure:

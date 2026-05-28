@@ -22,12 +22,12 @@ import { homedir } from 'node:os'
 import { execSync } from 'node:child_process'
 import { prompt, promptYesNo, promptSelect, closePrompts } from '../utils/prompts.js'
 import { ensureDir } from '../utils/installer.js'
+import { printHermesInstallIntro } from './hermes-install-guide.js'
+import { installHermesAgent } from './hermes-installer.js'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const HERMES_HOME = join(homedir(), '.hermes')
-const HERMES_INSTALL_URL =
-  'https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh'
 const HERMES_REPO = 'https://github.com/NousResearch/hermes-agent'
 const GEPA_REPO = 'https://github.com/NousResearch/hermes-agent-self-evolution'
 
@@ -336,55 +336,25 @@ function ensureProfileDirs(pDir: string): void {
 // ─── Subcommand: install ──────────────────────────────────────────────────────
 
 async function runHermesInstall(): Promise<void> {
-  console.log('\n─── Hermes Agent — Instalación ────────────────────────')
-  console.log(`    Repo: ${HERMES_REPO}\n`)
+  printHermesInstallIntro()
 
-  let isInstalled = false
   try {
-    execSync('hermes --version', { stdio: 'pipe' })
-    isInstalled = true
-  } catch { /* not installed */ }
-
-  if (isInstalled) {
-    try {
-      const ver = execSync('hermes --version', { stdio: 'pipe', encoding: 'utf8' }).trim()
-      console.log(`✅ Hermes ya instalado: ${ver}`)
-    } catch { console.log('✅ Hermes ya instalado') }
-
-    const runSetup = await promptYesNo('¿Ejecutar "hermes setup" de todas formas?', false)
-    closePrompts()
-    if (runSetup) execSync('hermes setup', { stdio: 'inherit' })
-    return
+    await installHermesAgent()
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error(`\n❌ Instalación de Hermes falló: ${msg}\n`)
+    process.exit(1)
   }
 
-  if (process.platform === 'win32') {
-    closePrompts()
-    console.log('\n⚠️  Hermes requiere Linux, macOS, o WSL2 en Windows.')
-    console.log('\nDesde WSL2:')
-    console.log(`  curl -fsSL ${HERMES_INSTALL_URL} | bash`)
-    console.log('  source ~/.bashrc')
-    console.log('  hermes setup')
-    console.log('\nDocumentación: https://hermes-agent.nousresearch.com/docs\n')
-    return
-  }
-
-  const proceed = await promptYesNo(
-    `¿Instalar Hermes Agent ahora?\n  (requiere Python 3.11+, ~8GB RAM)`,
+  const runInit = await promptYesNo(
+    '¿Crear ~/.hermes/ para este template (claudio hermes init programmer)?',
     true,
   )
   closePrompts()
 
-  if (!proceed) {
-    console.log(`\nPara instalar manualmente:\n  curl -fsSL ${HERMES_INSTALL_URL} | bash\n`)
-    return
+  if (runInit) {
+    await runHermesInit('programmer')
   }
-
-  console.log('\nInstalando Hermes Agent...\n')
-  execSync(`curl -fsSL ${HERMES_INSTALL_URL} | bash`, { stdio: 'inherit', shell: true })
-  console.log('\n✅ Instalado. Recargá tu shell:')
-  console.log('   source ~/.bashrc  (o ~/.zshrc)')
-  console.log('\nConfigurá tu API key y modelo:')
-  console.log('   hermes setup\n')
 }
 
 // ─── Subcommand: init ─────────────────────────────────────────────────────────
@@ -688,21 +658,21 @@ USO
   claudio hermes <subcomando> [opciones]
 
 SUBCOMANDOS
-  install              Instala Hermes Agent (Linux / macOS / WSL2)
+  install              Clona/actualiza github.com/NousResearch/hermes-agent (solo el repo)
   init [perfil]        Crea ~/.hermes/ con SOUL.md, MEMORY.md, skills iniciales
   optimize [ruta]      Sincroniza Obsidian vault + .claude/ → Hermes memory
   status               Estado de ~/.hermes/ y sus componentes
   gepa                 Instrucciones para optimizar skills con GEPA offline
 
-FLUJO RECOMENDADO
-  ┌─ 1. claudio evoluciona       → setup del proyecto + vault Obsidian
-  │  2. claudio hermes install   → instalar Hermes Agent
-  │  3. claudio hermes init      → SOUL.md + memoria inicial + skills
-  │  4. claudio hermes optimize  → Obsidian → MEMORY.md + USER.md
-  └─ 5. hermes                   → Hermes con contexto completo del proyecto
+FLUJO RECOMENDADO (con este template)
+  1. claudio init / evoluciona   → .claude/ en tu proyecto
+  2. claudio hermes init         → ~/.hermes/ (no requiere binario hermes)
+  3. claudio hermes optimize     → Obsidian → MEMORY.md (si tenés vault)
 
-  Cuando el agente maduró (semanas de uso):
-     claudio hermes gepa  → optimizar skills con GEPA (ICLR 2026)
+  Opcional — código fuente de Hermes:
+     claudio hermes install       → clona el repo (último release), sin deps extra
+
+  Avanzado: claudio hermes gepa  → optimizar skills con GEPA
 
 MEMORY ARCHITECTURE (Hermes Tier 1)
   MEMORY.md  — ${MEMORY_MD_MAX_CHARS} chars max — hechos del proyecto, pipeline, convenciones
@@ -718,6 +688,7 @@ OBSIDIAN COMO CONNECTOR DB
 export async function runHermes(subcommand?: string, args: string[] = []): Promise<void> {
   if (!subcommand || subcommand === '--help' || subcommand === '-h') {
     console.log(HERMES_HELP)
+    console.log('\nTip: ejecutá "claudio hermes" sin argumentos para un menú interactivo.\n')
     return
   }
 

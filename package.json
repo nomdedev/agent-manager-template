@@ -22,6 +22,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
+    "setup": "tsx src/cli/claudio.ts init",
+    "skills:install": "npx skills@latest add mattpocock/skills --yes",
     "claudio": "tsx src/cli/claudio.ts"
   },
   "dependencies": {

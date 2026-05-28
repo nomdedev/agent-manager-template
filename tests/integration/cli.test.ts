@@ -65,10 +65,17 @@ describe('claudio --help', () => {
     expect(result.stdout).toContain('hermes')
   })
 
-  it('no-args also shows help (exits 0)', () => {
+  it('no-args shows help when stdin is not a TTY (exits 0)', () => {
     const result = runClaudio()
     expect(result.status).toBe(0)
     expect(result.stdout).toContain('claudio')
+    expect(result.stdout).toContain('init')
+  })
+
+  it('guia pipeline prints topic content', () => {
+    const result = runClaudio('guia', 'pipeline')
+    expect(result.status).toBe(0)
+    expect(result.stdout).toContain('Pipeline')
   })
 
   it('-h alias shows help', () => {
