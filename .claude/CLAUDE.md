@@ -579,3 +579,25 @@ Usar `skill-html-artifacts` para generar el HTML base.
 2. Desarrollar con tests
 3. Self-review antes de PR
 4. Merge a main via squash-merge
+
+## gstack (recommended)
+
+Este proyecto usa [gstack](https://github.com/garrytan/gstack) en **modo team**: instalación global, sin copias vendored en el repo.
+
+Instalación (una vez por máquina):
+
+```bash
+pnpm run gstack:install
+# o: claudio gstack install
+```
+
+Requisitos: git, bash (Git Bash en Windows), [Bun](https://bun.sh).
+
+Tras instalar, reiniciá Claude Code. Skills disponibles: `/office-hours`, `/plan-ceo-review`, `/review`, `/ship`, `/qa`, `/investigate`, `/browse`, `/cso`, `/autoplan`, y más.
+
+**Reglas de convivencia con este template:**
+
+- Usá `/browse` de gstack para navegación web; no uses herramientas `mcp__claude-in-chrome__*`.
+- El pipeline de 7 fases (`.claude/rules/orchestration.md`) y mattpocock/skills siguen siendo la fuente de verdad para features del template.
+- gstack complementa con review, QA en browser, ship y planificación estratégica.
+- Rutas de gstack: `~/.claude/skills/gstack/...` (instalación global).

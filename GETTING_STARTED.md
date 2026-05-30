@@ -77,7 +77,7 @@ Deberías ver checks en verde (✓) para Node, `.claude/`, MCP paths y hooks.
 
 ## Opcional (avanzado)
 
-Obsidian, Hermes Agent y los 4 niveles de madurez → [docs/ADVANCED.md](docs/ADVANCED.md)
+gstack (review, QA, ship), Obsidian, Hermes Agent → [docs/ADVANCED.md](docs/ADVANCED.md)
 
 ## Problemas frecuentes
 

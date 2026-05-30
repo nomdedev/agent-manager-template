@@ -1,5 +1,29 @@
 # Configuración avanzada (opcional)
 
+## gstack (Garry Tan)
+
+Equipo virtual de ingeniería: `/review`, `/ship`, `/qa`, `/office-hours`, `/browse`, etc.
+
+```bash
+pnpm run gstack:install
+# o: claudio gstack install
+```
+
+Qué hace:
+
+1. Clona o actualiza `https://github.com/garrytan/gstack` en `~/.claude/skills/gstack`.
+2. Ejecuta `./setup --team` (requiere **bash** y **bun**).
+3. No vendorea archivos en el repo — modo team recomendado por gstack.
+
+Verificación:
+
+```bash
+claudio gstack status
+claudio doctor
+```
+
+Documentación del repo: sección **gstack** en `.claude/CLAUDE.md`.
+
 ## Hermes Agent
 
 ```bash

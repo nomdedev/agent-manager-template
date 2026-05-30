@@ -42,6 +42,7 @@ logs/
 .claude/backups/
 .claude/downloads/
 .claude/settings.local.json
+.claude/skills/gstack/
 
 # OpenCode
 .opencode/plugins/node_modules/

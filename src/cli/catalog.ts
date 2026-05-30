@@ -83,6 +83,16 @@ export const ADVANCED_COMMANDS: CatalogCommand[] = [
     advanced: true,
   },
   {
+    id: 'gstack',
+    name: 'gstack',
+    summary: 'gstack — review, QA, ship y planificación (Garry Tan)',
+    description:
+      'Instala gstack globalmente en ~/.claude/skills/gstack. Complementa el pipeline con /review, /ship, /qa, /browse.',
+    usage: 'claudio gstack <install|status>',
+    examples: ['claudio gstack install', 'pnpm run gstack:install'],
+    advanced: true,
+  },
+  {
     id: 'vault',
     name: 'vault',
     summary: 'Analizar y optimizar el vault Obsidian del proyecto',
@@ -243,6 +253,11 @@ Ver docs/ADVANCED.md`,
     title: 'Hermes Agent (opcional)',
     body: `claudio hermes install: clona el repo hermes-agent (último tag de GitHub) en ~/.hermes/hermes-agent. No instala Python ni npm.
 claudio hermes init: memoria ~/.hermes/ para este template. Ver docs/ADVANCED.md`,
+  },
+  gstack: {
+    title: 'gstack (recomendado)',
+    body: `pnpm run gstack:install: clona garrytan/gstack en ~/.claude/skills/gstack y ejecuta ./setup --team.
+Skills: /review, /ship, /qa, /browse, /office-hours. Complementa el pipeline del template. Ver docs/ADVANCED.md`,
   },
 }
 

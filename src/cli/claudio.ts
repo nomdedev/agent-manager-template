@@ -5,6 +5,7 @@
 
 import { runEvoluciona } from './commands/evoluciona.js'
 import { runHermes } from './commands/hermes.js'
+import { runGstack } from './commands/gstack.js'
 import { vaultCommand } from './commands/vault.js'
 import { harnessCommand } from './commands/harness.js'
 import { runInit } from './commands/init.js'
@@ -32,6 +33,10 @@ async function main(): Promise<void> {
     const cmd = args.find(a => !a.startsWith('-'))
     if (cmd === 'hermes') {
       await runHermes('--help')
+      return
+    }
+    if (cmd === 'gstack') {
+      await runGstack('--help')
       return
     }
     console.log(buildFullHelp())
@@ -87,6 +92,12 @@ async function main(): Promise<void> {
         break
       }
       await runHermes(sub, subRest)
+      break
+    }
+
+    case 'gstack': {
+      const sub = rest[0]
+      await runGstack(sub, rest.slice(1))
       break
     }
 

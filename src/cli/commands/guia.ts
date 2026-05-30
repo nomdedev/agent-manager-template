@@ -56,11 +56,11 @@ export function runGuia(topicArg?: string): void {
     'context + architecture + domain.md generados para TU proyecto',
   ].join('\n'))
 
-  for (const key of ['pipeline', 'agentes', 'comandos', 'hooks', 'skills', 'obsidian', 'hermes'] as const) {
+  for (const key of ['pipeline', 'agentes', 'comandos', 'hooks', 'skills', 'obsidian', 'hermes', 'gstack'] as const) {
     const t = COMPONENT_TOPICS[key]!
     printSection(t.title, t.body)
   }
 
-  console.log('\nTemas detallados: claudio guia <pipeline|agentes|hooks|skills|obsidian|hermes|comandos>\n')
+  console.log('\nTemas detallados: claudio guia <pipeline|agentes|hooks|skills|obsidian|hermes|gstack|comandos>\n')
   console.log('Documentación: GETTING_STARTED.md · docs/REFERENCE.md · docs/ADVANCED.md\n')
 }

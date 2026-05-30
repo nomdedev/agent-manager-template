@@ -21,3 +21,7 @@ Single-context: `CONTEXT.md`, `.claude/context.md`, `.claude/rules/domain.md`. V
 ### Ciclo de tareas (obligatorio)
 
 Antes de planificar o implementar, leé [.claude/rules/mattpocock-task-cycle.md](.claude/rules/mattpocock-task-cycle.md) y el skill [.claude/skills/skill-mattpocock-cycle/SKILL.md](.claude/skills/skill-mattpocock-cycle/SKILL.md).
+
+### gstack (Garry Tan — recomendado)
+
+Instalación global (modo team): `pnpm run gstack:install` o `claudio gstack install`. Ver sección **gstack** en [.claude/CLAUDE.md](.claude/CLAUDE.md). Skills: `/review`, `/ship`, `/qa`, `/browse`, `/office-hours`, etc.

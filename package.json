@@ -24,29 +24,31 @@
     "typecheck": "tsc --noEmit",
     "setup": "tsx src/cli/claudio.ts init",
     "skills:install": "npx skills@latest add mattpocock/skills --yes",
+    "gstack:install": "tsx src/cli/claudio.ts gstack install",
     "claudio": "tsx src/cli/claudio.ts"
   },
   "dependencies": {
-    "fastify": "^5.8.5",
     "@fastify/cors": "^11.0.0",
-    "openai": "^4.85.0",
-    "zod": "^3.24.0",
     "dotenv": "^16.4.0",
+    "fastify": "^5.8.5",
+    "gstack": "github:garrytan/gstack",
+    "openai": "^4.85.0",
     "pino": "^9.6.0",
-    "pino-pretty": "^13.0.0"
+    "pino-pretty": "^13.0.0",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
-    "tsx": "^4.19.0",
+    "@eslint/js": "^9.22.0",
     "@types/node": "^22.13.0",
-    "vitest": "^3.1.0",
+    "@types/supertest": "^6.0.0",
     "@vitest/coverage-v8": "^3.1.0",
     "eslint": "^9.22.0",
-    "@eslint/js": "^9.22.0",
-    "typescript-eslint": "^8.26.0",
     "prettier": "^3.5.0",
     "supertest": "^7.0.0",
-    "@types/supertest": "^6.0.0"
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.26.0",
+    "vitest": "^3.1.0"
   },
   "engines": {
     "node": ">=20.0.0"

@@ -8,6 +8,7 @@ import {
 } from '../utils/project.js'
 import { patchSettingsJson, setHookPermissions } from '../utils/installer.js'
 import { hasMattPocockSkills } from '../utils/skills.js'
+import { isGstackInstalled } from './gstack-installer.js'
 
 type CheckStatus = 'ok' | 'warn' | 'fail'
 
@@ -155,6 +156,16 @@ export async function runDoctor(cwd = process.cwd()): Promise<number> {
             status: 'warn',
             message: 'CONTEXT.md faltante',
             fix: 'copiar CONTEXT.md del template',
+          },
+    )
+
+    results.push(
+      isGstackInstalled()
+        ? { status: 'ok', message: 'gstack (~/.claude/skills/gstack)' }
+        : {
+            status: 'warn',
+            message: 'gstack no instalado (recomendado)',
+            fix: 'pnpm run gstack:install',
           },
     )
   }
