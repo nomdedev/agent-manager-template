@@ -1,0 +1,61 @@
+# Agentes de auditoría lifecycle — {{PROJECT_NAME}}
+
+Registro del ecosistema de auditoría por ciclo de vida (8 fases).  
+Generado por `claudio evoluciona` / `auditor-agent-factory`.
+
+## Project Profile
+
+**Nombre:** {{PROJECT_NAME}}  
+**Stack:** {{STACK}}  
+**Generado:** {{DATE}}
+
+## Dos pipelines en este proyecto
+
+| Pipeline | Rol | Documentación |
+|----------|-----|---------------|
+| **Equipos (7 fases)** | domain → architect → security-auditor → tester… | `.claude/rules/orchestration.md` |
+| **Lifecycle (8 fases)** | scope → architecture → … → production | Skill `audit-pipeline` |
+
+No mezclar veredictos ni agentes entre ambos.
+
+## Catálogo lifecycle
+
+| Fase | Agente | Cuándo invocar |
+|------|--------|----------------|
+| 0 | lifecycle-scope-auditor | Alcance, requisitos |
+| 1 | lifecycle-architecture-auditor | Capas, contratos |
+| 2 | lifecycle-design-auditor | UI/UX (si hay frontend) |
+| 3 | lifecycle-security-auditor | Secretos, OWASP, deps |
+| 4 | lifecycle-code-auditor | Convenciones, calidad |
+| 5 | lifecycle-test-auditor | Tests, CI |
+| 6 | lifecycle-devex-auditor | Docs, onboarding |
+| 7 | lifecycle-production-auditor | Deploy, GO/NO-GO |
+
+## Skills
+
+| Skill | Ruta |
+|-------|------|
+| audit-pipeline | `.claude/skills/audit-pipeline/SKILL.md` |
+| lifecycle-orchestrator | `.claude/skills/lifecycle-orchestrator/SKILL.md` |
+| auditor-agent-factory | `.claude/skills/auditor-agent-factory/SKILL.md` |
+
+## Estándares y rúbricas
+
+- Estándares: `docs/AUDIT_STANDARDS.md`
+- Checklists: `.claude/skills/lifecycle-orchestrator/references/checklists.md`
+- Cobertura: `audit-pipeline/references/coverage-by-phase.md`
+- Veredicto correcto/incorrecto: `audit-pipeline/references/verdict-rubrics.md`
+
+## Reportes
+
+```
+docs/audits/[feature-id]-[fase]-[YYYY-MM-DD].md
+```
+
+## Flujo recomendado
+
+```
+claudio evoluciona  → instala agentes lifecycle-*
+/audit-pipeline     → ejecutar auditoría de feature
+/plan               → pipeline de equipos (complementario)
+```

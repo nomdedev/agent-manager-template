@@ -24,6 +24,7 @@ import { prompt, promptYesNo, promptSelect, closePrompts } from '../utils/prompt
 import { ensureDir } from '../utils/installer.js'
 import { printHermesInstallIntro } from './hermes-install-guide.js'
 import { installHermesAgent } from './hermes-installer.js'
+import { readProjectSoul } from '../utils/hermes-bootstrap.js'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -487,6 +488,12 @@ async function runHermesOptimize(projectArg?: string): Promise<void> {
   const memPct = Math.round((memContent.length / MEMORY_MD_MAX_CHARS) * 100)
   console.log(`  ✅ MEMORY.md — ${memContent.length}/${MEMORY_MD_MAX_CHARS} chars (${memPct}% full)`)
 
+  const projectSoul = readProjectSoul(projectPath)
+  if (projectSoul) {
+    writeFileSync(join(pDir, 'SOUL.md'), projectSoul)
+    console.log('  ✅ SOUL.md — sincronizado desde .claude/hermes/SOUL.md')
+  }
+
   // Synthesize USER.md (only if not customized — check for default marker)
   const userPath = join(pDir, 'memories', 'USER.md')
   const existingUser = readFile(userPath)
@@ -665,9 +672,9 @@ SUBCOMANDOS
   gepa                 Instrucciones para optimizar skills con GEPA offline
 
 FLUJO RECOMENDADO (con este template)
-  1. claudio init / evoluciona   → .claude/ en tu proyecto
+  1. claudio init / evoluciona   → .claude/ + .claude/hermes/SOUL.md adaptado al proyecto
   2. claudio hermes init         → ~/.hermes/ (no requiere binario hermes)
-  3. claudio hermes optimize     → Obsidian → MEMORY.md (si tenés vault)
+  3. claudio hermes optimize     → SOUL + MEMORY sincronizados desde el proyecto
 
   Opcional — código fuente de Hermes:
      claudio hermes install       → clona el repo (último release), sin deps extra

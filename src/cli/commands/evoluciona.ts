@@ -21,6 +21,8 @@ import {
 } from '../utils/templates.js'
 import { getTemplateRoot } from '../utils/project.js'
 import { syncMattPocockBundle } from '../utils/skills.js'
+import { bootstrapAuditEcosystem } from '../utils/audit-bootstrap.js'
+import { bootstrapHermesProject, defaultHermesPriorities } from '../utils/hermes-bootstrap.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const TEMPLATE_ROOT = getTemplateRoot(import.meta.url)
@@ -71,8 +73,10 @@ export async function runEvoluciona(options: EvolucionaOptions = {}): Promise<vo
   )
 
   printSection('Qué se instalará', [
-    '12 agentes · 13 comandos slash · 11 skills template + 29 mattpocock · 11 hooks',
-    'context.md, architecture.md, domain.md y memory.md generados para vos',
+    '12 agentes equipo + 8 agentes lifecycle-audit · 14 comandos slash',
+    '13 skills template + 29 mattpocock · 11 hooks',
+    'context.md, architecture.md, domain.md, AUDIT_STANDARDS.md generados',
+    '.claude/hermes/SOUL.md adaptado al proyecto (identidad Hermes)',
     'Opcional: Obsidian y/o Hermes MCP (podés elegir después)',
   ].join('\n'))
 
@@ -120,6 +124,7 @@ export async function runEvoluciona(options: EvolucionaOptions = {}): Promise<vo
 
   let projectDescription: string | undefined
   let domainDescription: string | undefined
+  let priorities: [string, string, string] | undefined
 
   if (!yes && !minimal) {
     printSection(
@@ -136,6 +141,18 @@ export async function runEvoluciona(options: EvolucionaOptions = {}): Promise<vo
         '',
       )
     }
+
+    const priorityDefaults = defaultHermesPriorities(projectName, projectDescription)
+    printSection(
+      'Prioridades Hermes',
+      'Definen la sección Misión de .claude/hermes/SOUL.md. Enter acepta el default sugerido.',
+    )
+    const priority1 = await prompt('Prioridad 1 — foco inmediato', priorityDefaults[0])
+    const priority2 = await prompt('Prioridad 2 — siguiente hito', priorityDefaults[1])
+    const priority3 = await prompt('Prioridad 3 — mantenimiento / contexto', priorityDefaults[2])
+    priorities = [priority1, priority2, priority3]
+  } else {
+    priorities = defaultHermesPriorities(projectName, projectDescription)
   }
 
   let installObsidian = false
@@ -181,12 +198,18 @@ export async function runEvoluciona(options: EvolucionaOptions = {}): Promise<vo
     stack: stackName,
     description: projectDescription || undefined,
     domainDescription: domainDescription || projectDescription || undefined,
+    priorities,
   }
 
   console.log('\n─────────────────────────────────────────────')
   console.log(`  Proyecto : ${projectName}`)
   console.log(`  Target   : ${targetDir}`)
   console.log(`  Stack    : ${stackName}`)
+  if (priorities) {
+    console.log(`  P1       : ${priorities[0]}`)
+    console.log(`  P2       : ${priorities[1]}`)
+    console.log(`  P3       : ${priorities[2]}`)
+  }
   console.log(`  Obsidian : ${installObsidian ? 'Sí' : 'No'}`)
   if (hermesConfig) {
     const hermesDesc =
@@ -225,6 +248,12 @@ export async function runEvoluciona(options: EvolucionaOptions = {}): Promise<vo
   writeFileSync(join(claudeDir, 'memory.md'), generateMemoryMd(projectName))
   writeFileSync(join(claudeDir, 'rules', 'domain.md'), generateDomainMd(templateInput))
 
+  console.log('🔍 Bootstrap ecosistema de auditoría lifecycle ...')
+  bootstrapAuditEcosystem(targetDir, TEMPLATE_ROOT, templateInput)
+
+  console.log('🧠 Bootstrap identidad Hermes (SOUL.md) ...')
+  const hermesBootstrap = bootstrapHermesProject(targetDir, TEMPLATE_ROOT, templateInput)
+
   console.log('📁 Creando estructura de logs ...')
   touchGitkeep(join(claudeDir, 'logs', 'checkpoints'))
   touchGitkeep(join(claudeDir, 'logs', 'handoffs'))
@@ -259,12 +288,16 @@ export async function runEvoluciona(options: EvolucionaOptions = {}): Promise<vo
     createObsidianStarters(obsidianDest, projectName)
   }
 
-  printEvolucionaDone(targetDir, { installObsidian, hermesConfig })
+  printEvolucionaDone(targetDir, { installObsidian, hermesConfig, hermesBootstrap })
 }
 
 export function printEvolucionaDone(
   targetDir: string,
-  opts: { installObsidian: boolean; hermesConfig?: HermesConfig },
+  opts: {
+    installObsidian: boolean
+    hermesConfig?: HermesConfig
+    hermesBootstrap?: { profileSlug: string; syncedToHermesHome: boolean } | null
+  },
 ): void {
   console.log('\n╔════════════════════════════════════════════╗')
   console.log('║   ✅  Instalación completada!              ║')
@@ -283,5 +316,17 @@ export function printEvolucionaDone(
 
   if (opts.hermesConfig) {
     console.log('  🔌 Hermes MCP: reiniciá Claude Code para cargar la configuración\n')
+  }
+
+  console.log('  🔍 Lifecycle audit: /audit-pipeline · docs/AUDIT_PIPELINE.md\n')
+
+  if (opts.hermesBootstrap) {
+    const { profileSlug, syncedToHermesHome } = opts.hermesBootstrap
+    console.log('  🧠 Hermes SOUL: .claude/hermes/SOUL.md (editá misión y prioridades ahí)\n')
+    if (syncedToHermesHome) {
+      console.log(`  🧠 Perfil Hermes: hermes -p ${profileSlug}\n`)
+    } else {
+      console.log('  🧠 Hermes: claudio hermes init && claudio hermes optimize\n')
+    }
   }
 }

@@ -7,6 +7,8 @@
 
 **Skills mattpocock (obligatorio):** En cada fase, cargar los skills indicados en [mattpocock-task-cycle.md](./mattpocock-task-cycle.md) antes de entregar el artefacto de la fase. Empezar toda feature con `skill-mattpocock-cycle`.
 
+**Pipeline lifecycle (complementario):** Para auditorías por ciclo de vida (8 fases, GO/NO-GO), usar skill `audit-pipeline` y agentes `lifecycle-*-auditor`. Ver `docs/AUDIT_PIPELINE.md`. No reemplaza este pipeline de equipos — los veredictos son independientes.
+
 ---
 
 ## Pipeline Secuencial por Equipos (Gated, NO se saltea NUNCA)

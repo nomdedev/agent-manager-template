@@ -1,0 +1,71 @@
+# Estándares de auditoría — {{PROJECT_NAME}}
+
+Fuente única para auditores lifecycle. Fusiona baseline universal + reglas del proyecto.  
+Actualizar cuando cambien `.claude/context.md`, CI o reglas de seguridad.
+
+**Stack:** {{STACK}}  
+**Generado:** {{DATE}}
+
+## Cómo usar
+
+1. Skill `audit-pipeline` — workflow de ejecución
+2. Esta sección por disciplina — estándares
+3. `lifecycle-orchestrator/references/checklists.md` — ítems verificables
+4. Agente `lifecycle-*-auditor` — proceso y comandos
+
+> El **pipeline de equipos** (7 fases, `.claude/rules/orchestration.md`) y el **pipeline lifecycle** (8 fases, esta skill) son **complementarios**.
+
+---
+
+## Fase 0 — Scope
+
+- Problema medible, alcance IN/OUT, criterios verificables
+- Ver `.claude/context.md` y `.claude/rules/domain.md`
+
+## Fase 1 — Arquitectura
+
+- Capas separadas, contratos explícitos
+- Ver `.claude/architecture.md`
+
+## Fase 2 — Diseño/UX
+
+- Estados loading/empty/error, a11y básica
+- Build frontend: `{{BUILD_COMMAND}}`
+
+## Fase 3 — Seguridad
+
+- OWASP, sin secretos en cliente, `npm audit`
+- Ver `.claude/rules/security.md` (obligatorio)
+
+## Fase 4 — Código
+
+- Convenciones del repo, sin deuda bloqueante
+- Ver convenciones en context.md / Obsidian si aplica
+
+## Fase 5 — Testing
+
+- `{{TEST_COMMAND}}` debe pasar
+- Casos negativos para lógica nueva
+- Ver `.claude/rules/` y skill-testing
+
+## Fase 6 — DevEx
+
+- README, context.md, scripts npm documentados
+- CI alineado con tests locales
+
+## Fase 7 — Producción
+
+- `{{BUILD_COMMAND}}` + `{{TEST_COMMAND}}` antes de GO
+- Fases 0-6 APROBADO
+- Veredicto: **GO / NO-GO**
+
+---
+
+## Comandos de referencia
+
+| Disciplina | Comando |
+|------------|---------|
+| Design/Build | `{{BUILD_COMMAND}}` |
+| Test | `{{TEST_COMMAND}}` |
+| Lint | `{{LINT_COMMAND}}` |
+| Security | `npm audit` |

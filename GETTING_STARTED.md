@@ -31,6 +31,7 @@ npm install -g agent-manager-template
 claudio init ./mi-proyecto --yes
 cd mi-proyecto
 claudio doctor
+# Lifecycle audit: /audit-pipeline · docs/AUDIT_PIPELINE.md
 ```
 
 El wizard genera automáticamente:

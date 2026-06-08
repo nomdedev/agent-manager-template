@@ -35,7 +35,8 @@ claudio doctor
 - [Los 7 agentes especializados](#los-7-agentes-especializados)
 - [Los 12 comandos slash](#los-12-comandos-slash)
 - [Los 11 hooks de seguridad y calidad](#los-11-hooks-de-seguridad-y-calidad)
-- [Los 10 skills especializados](#los-10-skills-especializados)
+- [Los 13 skills especializados](#los-13-skills-especializados)
+- [Pipeline lifecycle de auditoría](#pipeline-lifecycle-de-auditoría)
 - [Las 5 reglas del proyecto](#las-5-reglas-del-proyecto)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Stack tecnologico](#stack-tecnologico)
@@ -56,7 +57,8 @@ La idea central es simple: en lugar de que Claude Code sea un asistente general 
 - 12 agentes especializados con permisos y protocolos definidos
 - 12 comandos slash (`/audit`, `/security`, `/test`, `/review`, `/frontend`, etc.)
 - 11 hooks que bloquean automaticamente operaciones peligrosas
-- 10 skills cargables on-demand
+- 13 skills cargables on-demand (incl. audit-pipeline lifecycle)
+- 8 agentes lifecycle-audit (scope → production, GO/NO-GO)
 - Vault de Obsidian y Hermes Agent — **opcionales** ([docs/ADVANCED.md](docs/ADVANCED.md))
 
 ---
@@ -184,10 +186,33 @@ cp .env.example .env
 
 ---
 
+## Pipeline lifecycle de auditoría
+
+Complementa el pipeline de **7 equipos** (`orchestration.md`) con un ciclo de **8 fases** orientado a calidad por disciplina:
+
+| Fase | Agente lifecycle |
+|------|------------------|
+| 0 Intake | lifecycle-scope-auditor |
+| 1 Arquitectura | lifecycle-architecture-auditor |
+| 2 Diseño | lifecycle-design-auditor |
+| 3 Seguridad | lifecycle-security-auditor |
+| 4 Código | lifecycle-code-auditor |
+| 5 Testing | lifecycle-test-auditor |
+| 6 DevEx | lifecycle-devex-auditor |
+| 7 Producción | lifecycle-production-auditor (GO/NO-GO) |
+
+**Instalación:** automática con `claudio evoluciona` → genera `docs/AUDIT_STANDARDS.md`, `docs/AUDIT_AGENTS.md` y 8 agentes.
+
+**Uso:** `/audit-pipeline [feature-id]` o skill `audit-pipeline`.
+
+**Documentación:** [docs/AUDIT_PIPELINE.md](docs/AUDIT_PIPELINE.md)
+
+---
+
 ## Adaptarlo a tu proyecto
 
 ```bash
-claudio init ./mi-proyecto        # genera .claude/ + domain.md + context.md
+claudio init ./mi-proyecto        # genera .claude/ + domain.md + context.md + audit lifecycle
 claudio doctor
 ```
 

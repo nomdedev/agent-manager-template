@@ -15,6 +15,8 @@ export interface ProjectTemplateInput {
   stack: string
   description?: string
   domainDescription?: string
+  /** Prioridades 1–3 para .claude/hermes/SOUL.md */
+  priorities?: [string, string, string]
 }
 
 export function generateContextMd(input: ProjectTemplateInput): string {
