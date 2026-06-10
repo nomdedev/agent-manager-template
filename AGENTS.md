@@ -18,6 +18,10 @@ Vocabulario en [docs/agents/triage-labels.md](docs/agents/triage-labels.md).
 
 Single-context: `CONTEXT.md`, `.claude/context.md`, `.claude/rules/domain.md`. Ver [docs/agents/domain.md](docs/agents/domain.md).
 
+### Loop Engineering (obligatorio para loops)
+
+Antes de construir un loop, leé [docs/LOOP-ENGINEERING.md](docs/LOOP-ENGINEERING.md) y pasá el test de 4 condiciones. Templates: [docs/templates/STATE.md](docs/templates/STATE.md), [docs/templates/VISION.md](docs/templates/VISION.md). Anti-patterns: [docs/ANTI-PATTERNS.md](docs/ANTI-PATTERNS.md). Gates: [docs/LOOP-GATES.md](docs/LOOP-GATES.md).
+
 ### Ciclo de tareas (obligatorio)
 
 Antes de planificar o implementar, leé [.claude/rules/mattpocock-task-cycle.md](.claude/rules/mattpocock-task-cycle.md) y el skill [.claude/skills/skill-mattpocock-cycle/SKILL.md](.claude/skills/skill-mattpocock-cycle/SKILL.md).
