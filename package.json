@@ -31,7 +31,6 @@
     "@fastify/cors": "^11.0.0",
     "dotenv": "^16.4.0",
     "fastify": "^5.8.5",
-    "gstack": "github:garrytan/gstack",
     "openai": "^4.85.0",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
@@ -41,14 +40,14 @@
     "@eslint/js": "^9.22.0",
     "@types/node": "^22.13.0",
     "@types/supertest": "^6.0.0",
-    "@vitest/coverage-v8": "^3.1.0",
+    "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^9.22.0",
     "prettier": "^3.5.0",
     "supertest": "^7.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.26.0",
-    "vitest": "^3.1.0"
+    "vitest": "^4.1.9"
   },
   "engines": {
     "node": ">=20.0.0"

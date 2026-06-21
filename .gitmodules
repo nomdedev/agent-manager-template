@@ -1,0 +1,3 @@
+[submodule "external/gstack"]
+	path = external/gstack
+	url = https://github.com/garrytan/gstack.git

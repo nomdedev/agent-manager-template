@@ -49,3 +49,16 @@ export function parseEvolucionaArgs(args: string[]): EvolucionaFlags {
     targetDir: positional[0],
   }
 }
+
+export interface AutoAuditInstallFlags {
+  targetDir?: string
+  yes: boolean
+}
+
+export function parseAutoAuditInstallArgs(args: string[]): AutoAuditInstallFlags {
+  const { positional, yes } = extractPositionalAndFlags(args)
+  return {
+    yes,
+    targetDir: positional[0],
+  }
+}

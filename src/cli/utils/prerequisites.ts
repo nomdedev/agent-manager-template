@@ -20,7 +20,7 @@ function tryExec(cmd: string): string | null {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
       timeout: 15_000,
-      shell: process.platform === 'win32',
+      shell: process.platform === 'win32' ? 'cmd.exe' : undefined,
     })
     return out.trim().split(/\r?\n/)[0] ?? null
   } catch {

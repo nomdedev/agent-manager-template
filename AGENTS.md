@@ -29,3 +29,7 @@ Antes de planificar o implementar, leé [.claude/rules/mattpocock-task-cycle.md]
 ### gstack (Garry Tan — recomendado)
 
 Instalación global (modo team): `pnpm run gstack:install` o `claudio gstack install`. Ver sección **gstack** en [.claude/CLAUDE.md](.claude/CLAUDE.md). Skills: `/review`, `/ship`, `/qa`, `/browse`, `/office-hours`, etc.
+
+### Auto-Audit Loop (sistema de análisis automático)
+
+Sistema de loops que activa automáticamente agentes expertos según el tipo de archivo modificado. Ver [.claude/skills/auto-audit-loop/SKILL.md](.claude/skills/auto-audit-loop/SKILL.md). Comando: `/auto-audit`. Hook: `03-auto-audit-trigger.sh` se activa después de cada edición. Cron job diario a las 9am. Reportes HTML en `.claude/logs/auto-audit/reports/`.

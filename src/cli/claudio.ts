@@ -13,7 +13,8 @@ import { runDoctor } from './commands/doctor.js'
 import { runMainMenu } from './commands/menu.js'
 import { runGuia } from './commands/guia.js'
 import { runHermesInteractive } from './commands/menu.js'
-import { parseInitArgs, parseEvolucionaArgs } from './utils/args.js'
+import { runAutoAuditInstall } from './commands/auto-audit-install.js'
+import { parseInitArgs, parseEvolucionaArgs, parseAutoAuditInstallArgs } from './utils/args.js'
 import { buildFullHelp } from './catalog.js'
 import { isInteractive } from './utils/ui.js'
 import { VAULT_CHOICES, HARNESS_CHOICES } from './catalog.js'
@@ -132,6 +133,12 @@ async function main(): Promise<void> {
         break
       }
       await harnessCommand(sub, rest.slice(1))
+      break
+    }
+
+    case 'auto-audit-install': {
+      const flags = parseAutoAuditInstallArgs(rest)
+      await runAutoAuditInstall(flags)
       break
     }
 

@@ -25,6 +25,7 @@ type MainMenuId =
   | 'hermes-menu'
   | 'vault-menu'
   | 'harness-menu'
+  | 'auto-audit-install'
   | 'help'
   | 'exit'
 
@@ -78,6 +79,12 @@ export async function runMainMenu(): Promise<void> {
       advanced: true,
     },
     {
+      id: 'auto-audit-install',
+      label: 'Instalar Auto-Audit Loop',
+      description: 'Copia el sistema de auto-audit a cualquier proyecto.',
+      advanced: true,
+    },
+    {
       id: 'help',
       label: 'Ver ayuda completa (texto)',
       description: 'Lista todos los comandos y ejemplos.',
@@ -118,6 +125,12 @@ export async function runMainMenu(): Promise<void> {
     case 'harness-menu':
       await runHarnessMenu()
       break
+    case 'auto-audit-install': {
+      const { runAutoAuditInstall } = await import('./auto-audit-install.js')
+      const path = await promptOptionalPath('¿En qué carpeta instalamos Auto-Audit? (Enter = actual)')
+      await runAutoAuditInstall({ targetDir: path, yes: false })
+      break
+    }
     case 'help':
       console.log(buildFullHelp())
       break

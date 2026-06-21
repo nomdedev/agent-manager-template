@@ -6,7 +6,7 @@ import type { Tool, ToolResult } from '../types/index.js';
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
-  content: string;
+  content: string | null;
   tool_call_id?: string;
 }
 
@@ -69,7 +69,7 @@ export class AgentService {
     for (let i = 0; i < maxIterations; i++) {
       const response = await this.openai.chat.completions.create({
         model: agent.model,
-        messages: history,
+        messages: history as OpenAI.ChatCompletionMessageParam[],
         tools: openaiTools.length > 0 ? openaiTools : undefined,
       });
 

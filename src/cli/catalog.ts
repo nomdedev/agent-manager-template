@@ -110,6 +110,15 @@ export const ADVANCED_COMMANDS: CatalogCommand[] = [
     examples: ['claudio harness audit mi-feature'],
     advanced: true,
   },
+  {
+    id: 'auto-audit-install',
+    name: 'auto-audit-install',
+    summary: 'Instalar Auto-Audit Loop en cualquier proyecto',
+    description: 'Copia el sistema de auto-audit (skill, hook, script, comando) a un proyecto existente. Actualiza package.json y crea .env.example.',
+    usage: 'claudio auto-audit-install [carpeta] [--yes]',
+    examples: ['claudio auto-audit-install', 'claudio auto-audit-install ./mi-proyecto --yes'],
+    advanced: true,
+  },
 ]
 
 export const HERMES_CHOICES: CatalogChoice[] = [

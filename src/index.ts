@@ -9,16 +9,19 @@ import { errorHandler } from './middleware/error-handler.js';
 async function main() {
   const app = Fastify({
     logger: {
-      level: config.logLevel,
+      level: config.LOG_LEVEL,
       transport:
-        config.nodeEnv === 'development'
+        config.NODE_ENV === 'development'
           ? { target: 'pino-pretty', options: { colorize: true } }
           : undefined,
     },
   });
 
-  // Plugins
-  await app.register(cors, { origin: true });
+  // Plugins — CORS restringido por entorno
+  const allowedOrigins = config.NODE_ENV === 'production'
+    ? (process.env.ALLOWED_ORIGINS?.split(',') || ['https://tu-dominio.vercel.app'])
+    : true;
+  await app.register(cors, { origin: allowedOrigins });
 
   // Middleware
   errorHandler(app);
@@ -29,9 +32,9 @@ async function main() {
 
   // Start
   try {
-    await app.listen({ port: config.port, host: '0.0.0.0' });
-    logger.info(`Server running on http://localhost:${config.port}`);
-    logger.info(`Environment: ${config.nodeEnv}`);
+    await app.listen({ port: config.PORT, host: '0.0.0.0' });
+    logger.info(`Server running on http://localhost:${config.PORT}`);
+    logger.info(`Environment: ${config.NODE_ENV}`);
   } catch (err) {
     logger.error(err, 'Failed to start server');
     process.exit(1);
