@@ -52,7 +52,7 @@ importers:
         specifier: ^7.0.0
         version: 7.2.2
       tsx:
-        specifier: ^4.19.0
+        specifier: ^4.22.4
         version: 4.22.4
       typescript:
         specifier: ^5.7.0
