@@ -174,7 +174,7 @@ Banned phrases without proof:
 
 ## Agent skills (mattpocock/skills — obligatorio en cada tarea)
 
-Skills de ingeniería en `.agents/skills/` (29 skills, lockfile `skills-lock.json`). Reinstalar: `pnpm run skills:install`.
+Skills de ingeniería en `.agents/skills/` (96 skills de mattpocock/skills, vercel-labs/skills, vercel-labs/agent-browser, juliusbrussee/caveman, czlonkowski/n8n-skills, higgsfield-ai/skills, remotion-dev/skills, seaworld008/commonly-used-high-value-skills (andrej-karpathy-skills) y astro-han/karpathy-llm-wiki; lockfile en `skills-lock.json` en la raíz del repo). Reinstalar/actualizar: `pnpm run skills:install` (mattpocock/skills) o `npx skills@latest add <owner/repo> --all -y` para los demás orígenes.
 
 | Tema | Ubicación |
 | ---- | --------- |
@@ -477,7 +477,7 @@ agent-manager-template/
 │   │   ├── skill-testing/
 │   │   └── skill-mattpocock-cycle/
 │   └── logs/             # Audit trail y pipeline state
-├── .agents/skills/       # 29 skills mattpocock (skills-lock.json)
+├── .agents/skills/       # 96 skills multi-origen (ver skills-lock.json en la raíz)
 ├── docs/agents/          # issue tracker, triage, domain para mattpocock
 ├── CONTEXT.md            # puntero de contexto (raíz)
 ├── AGENTS.md             # resumen para agentes

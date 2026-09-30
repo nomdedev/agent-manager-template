@@ -1,14 +1,9 @@
 import OpenAI from 'openai';
+import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 import { calculatorTool, dateTimeTool } from '../tools/index.js';
 import type { Tool, ToolResult } from '../types/index.js';
-
-interface ChatMessage {
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  content: string | null;
-  tool_call_id?: string;
-}
 
 interface AgentConfig {
   id: string;
@@ -29,7 +24,7 @@ Always respond in a clear and helpful manner. When using tools, explain what you
 
 export class AgentService {
   private openai: OpenAI | null = null;
-  private conversations: Map<string, ChatMessage[]> = new Map();
+  private conversations: Map<string, ChatCompletionMessageParam[]> = new Map();
 
   constructor() {
     if (config.OPENAI_API_KEY) {
@@ -69,14 +64,14 @@ export class AgentService {
     for (let i = 0; i < maxIterations; i++) {
       const response = await this.openai.chat.completions.create({
         model: agent.model,
-        messages: history as OpenAI.ChatCompletionMessageParam[],
+        messages: history,
         tools: openaiTools.length > 0 ? openaiTools : undefined,
       });
 
       const choice = response.choices[0];
       if (!choice?.message) break;
 
-      history.push(choice.message);
+      history.push(choice.message as ChatCompletionMessageParam);
 
       if (choice.finish_reason === 'stop') {
         lastResponse = choice.message.content ?? '';
