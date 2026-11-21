@@ -19,7 +19,7 @@ Vocabulario en [docs/agents/triage-labels.md](docs/agents/triage-labels.md).
 
 ### Domain docs
 
-Single-context: `CONTEXT.md`, `.claude/context.md`, `.claude/rules/domain.md`. Ver [docs/agents/domain.md](docs/agents/domain.md).
+Single-context: el glosario canónico es [GLOSSARY.md](GLOSSARY.md) y se mantiene al día. Reglas de dominio: `CONTEXT.md`, `.claude/context.md`, `.claude/rules/domain.md`. Ver [docs/agents/domain.md](docs/agents/domain.md).
 
 ### Loop Engineering (obligatorio para loops)
 
